@@ -1,0 +1,1791 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>آزمون هوشمند استعدادیابی برنامه‌نویسی و هوش مصنوعی | آموزشگاه توکاپیشرو</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Vazirmatn Persian Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Vazirmatn', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Vazirmatn', sans-serif;
+            background: radial-gradient(circle at top right, #2a1160, #120b30 55%, #070516);
+            min-height: 100vh;
+            color: #f8fafc;
+            overflow-x: hidden;
+        }
+
+        .glass-card {
+            background: rgba(30, 41, 59, 0.75);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .glass-card-light {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .glass-card-light:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(99, 102, 241, 0.45);
+            transform: translateY(-2px);
+        }
+
+        .task-selected {
+            background: linear-gradient(135deg, rgba(79, 70, 229, 0.3), rgba(147, 51, 234, 0.2)) !important;
+            border-color: #818cf8 !important;
+            box-shadow: 0 10px 25px -5px rgba(99, 102, 241, 0.28);
+        }
+
+        .avatar-selected {
+            border-color: #6366f1 !important;
+            background: rgba(99, 102, 241, 0.25) !important;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.35);
+            transform: scale(1.05);
+        }
+
+        .scenario-card-selected {
+            border-color: #818cf8 !important;
+            background: linear-gradient(135deg, rgba(79, 70, 229, 0.25), rgba(30, 41, 59, 0.9)) !important;
+            box-shadow: 0 12px 30px -8px rgba(99, 102, 241, 0.35);
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0.5); opacity: 0; }
+            80% { transform: scale(1.12); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .rank-badge {
+            animation: popIn 0.25s ease-out forwards;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 9999px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #4f46e5;
+        }
+
+        @media print {
+            body {
+                background: #ffffff !important;
+                color: #000000 !important;
+            }
+            .no-print {
+                display: none !important;
+            }
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-indigo-500 selection:text-white pb-16">
+
+    <!-- Decorative Ambient Glows -->
+    <div class="fixed top-0 left-1/2 -translate-x-1/2 w-[650px] h-[260px] bg-indigo-600/20 blur-[140px] pointer-events-none -z-10"></div>
+    <div class="fixed bottom-0 right-0 w-[450px] h-[250px] bg-purple-600/15 blur-[130px] pointer-events-none -z-10"></div>
+
+    <!-- ========================================================= -->
+    <!-- STICKY HEADER WITH STUDENT PROFILE & STEPPER              -->
+    <!-- ========================================================= -->
+    <header class="sticky top-0 z-30 bg-slate-900/85 backdrop-blur-md border-b border-white/10 no-print">
+        <div class="max-w-6xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-4">
+            <!-- Brand Title -->
+            <div class="flex items-center gap-3">
+                <img data-logo alt="لوگوی آموزشگاه توکاپیشرو" class="h-11 w-auto rounded-xl bg-white px-2 py-1 shadow-lg shadow-indigo-500/30">
+                <div>
+                    <h1 class="font-extrabold text-sm sm:text-base text-white tracking-tight">آزمون استعدادیابی برنامه‌نویسی و هوش مصنوعی</h1>
+                    <p id="header-scenario-subtitle" class="text-[11px] text-indigo-300">آموزشگاه توکاپیشرو • ۳ سناریوی غیرمستقیم، اولویت‌بندی ۱ تا ۱۰ و درخت تصمیم</p>
+                </div>
+            </div>
+
+            <!-- Logged-in Student Mini Profile (Visible after Login) -->
+            <div id="header-user-profile" class="hidden items-center gap-3 bg-slate-800/90 border border-white/10 px-3.5 py-1.5 rounded-2xl">
+                <div id="header-avatar-box" class="w-8 h-8 rounded-xl bg-indigo-500/30 text-indigo-300 flex items-center justify-center text-sm">
+                    <i class="fa-solid fa-user-astronaut"></i>
+                </div>
+                <div class="text-right">
+                    <div class="flex items-center gap-2">
+                        <span id="header-user-name" class="text-xs font-extrabold text-white">صبا رادمنش</span>
+                        <span id="header-completed-badge" class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                            ۰ آزمون
+                        </span>
+                    </div>
+                    <div id="header-user-school" class="text-[10px] text-slate-400">آموزشگاه توکاپیشرو • پایه نهم</div>
+                </div>
+                <button
+                    type="button"
+                    onclick="logoutAndEditProfile()"
+                    class="mr-1 px-2.5 py-1.5 rounded-xl bg-rose-500/15 hover:bg-rose-500/25 text-rose-300 border border-rose-500/30 text-[11px] font-bold flex items-center gap-1 transition"
+                    title="تغییر مشخصات یا خروج هنرجو"
+                >
+                    <i class="fa-solid fa-right-from-bracket"></i>
+                    <span class="hidden md:inline">تغییر کاربر</span>
+                </button>
+            </div>
+
+            <!-- Step Indicators -->
+            <div class="flex items-center gap-1.5 sm:gap-2 text-xs font-semibold">
+                <div id="step-ind-1" class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-indigo-600 text-white transition-all">
+                    <span class="w-5 h-5 rounded-full bg-white/20 flex items-center justify-center">۱</span>
+                    <span class="hidden sm:inline">ورود و سناریو</span>
+                </div>
+                <i class="fa-solid fa-chevron-left text-slate-600 text-[10px]"></i>
+                <div id="step-ind-2" class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-slate-800 text-slate-400 transition-all">
+                    <span class="w-5 h-5 rounded-full bg-white/10 flex items-center justify-center">۲</span>
+                    <span class="hidden sm:inline">اولویت ۱ تا ۱۰</span>
+                </div>
+                <i class="fa-solid fa-chevron-left text-slate-600 text-[10px]"></i>
+                <div id="step-ind-3" class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-slate-800 text-slate-400 transition-all">
+                    <span class="w-5 h-5 rounded-full bg-white/10 flex items-center justify-center">۳</span>
+                    <span class="hidden sm:inline">مسیر سلسله‌مراتبی</span>
+                </div>
+                <i class="fa-solid fa-chevron-left text-slate-600 text-[10px]"></i>
+                <div id="step-ind-4" class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-slate-800 text-slate-400 transition-all">
+                    <span class="w-5 h-5 rounded-full bg-white/10 flex items-center justify-center">۴</span>
+                    <span class="hidden sm:inline">کارنامه نهایی</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="max-w-6xl mx-auto px-4 pt-7">
+
+        <!-- Custom Toast Notification -->
+        <div id="toast-box" class="fixed bottom-6 left-6 z-50 hidden transform transition-all duration-300 no-print">
+            <div class="bg-slate-800 border border-indigo-500/50 text-white px-5 py-3.5 rounded-2xl shadow-2xl flex items-center gap-3">
+                <i id="toast-icon" class="fa-solid fa-circle-info text-indigo-400 text-lg"></i>
+                <span id="toast-text" class="text-sm font-medium"></span>
+            </div>
+        </div>
+
+        <!-- ========================================================= -->
+        <!-- STEP 1: STUDENT LOGIN & SCENARIO SELECTION                -->
+        <!-- ========================================================= -->
+        <section id="step-1" class="space-y-6">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+
+                <!-- Right Column: Student Login / Profile Form (7 cols) -->
+                <div class="lg:col-span-7 glass-card rounded-3xl p-6 sm:p-8 shadow-2xl space-y-6 relative overflow-hidden">
+                    <div class="absolute -left-16 -top-16 w-48 h-48 bg-indigo-600/15 rounded-full blur-3xl pointer-events-none"></div>
+
+                    <div class="flex flex-wrap items-center justify-between gap-3 border-b border-white/10 pb-4">
+                        <div class="space-y-1">
+                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-500/15 border border-indigo-400/30 text-indigo-300 text-xs font-bold">
+                                <i class="fa-solid fa-user-graduate"></i>
+                                پنل ورود هنرجو
+                            </span>
+                            <h2 class="text-xl sm:text-2xl font-black text-white">ثبت مشخصات و ورود به سامانه استعدادیابی</h2>
+                        </div>
+
+                        <!-- Quick Demo Student Profiles -->
+                        <div class="flex items-center gap-1.5 text-xs">
+                            <span class="text-slate-400">پرکردن نمونه:</span>
+                            <button type="button" onclick="fillSampleStudent('صبا', 'رادمنش', '', 'آموزشگاه توکاپیشرو', 'پایه نهم', 0)" class="px-2.5 py-1 rounded-lg bg-indigo-500/20 hover:bg-indigo-500/30 text-indigo-200 border border-indigo-400/30 font-bold transition">صبا</button>
+                            <button type="button" onclick="fillSampleStudent('امیرعلی', 'محمدی', '', 'آموزشگاه توکاپیشرو', 'پایه نهم', 1)" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-white/10 font-bold transition">امیرعلی</button>
+                            <button type="button" onclick="fillSampleStudent('سارا', 'کاظمی', '', 'آموزشگاه توکاپیشرو', 'پایه نهم', 2)" class="px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 border border-white/10 font-bold transition">سارا</button>
+                        </div>
+                    </div>
+
+                    <!-- Form Grid -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label for="login-first-name" class="block text-xs font-bold text-slate-300 mb-1.5">
+                                <i class="fa-solid fa-user text-indigo-400 ml-1"></i>
+                                نام هنرجو <span class="text-rose-400">*</span>
+                            </label>
+                            <input
+                                type="text"
+                                id="login-first-name"
+                                value=""
+                                placeholder="مثلاً: صبا"
+                                class="w-full bg-slate-900/90 border border-slate-700 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/30 rounded-xl px-4 py-3 text-white font-bold text-sm outline-none transition"
+                            />
+                        </div>
+
+                        <div>
+                            <label for="login-last-name" class="block text-xs font-bold text-slate-300 mb-1.5">
+                                <i class="fa-regular fa-id-card text-indigo-400 ml-1"></i>
+                                نام خانوادگی <span class="text-rose-400">*</span>
+                            </label>
+                            <input
+                                type="text"
+                                id="login-last-name"
+                                value=""
+                                placeholder="مثلاً: رادمنش"
+                                class="w-full bg-slate-900/90 border border-slate-700 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/30 rounded-xl px-4 py-3 text-white font-bold text-sm outline-none transition"
+                            />
+                        </div>
+
+                        <div>
+                            <label for="login-student-code" class="block text-xs font-bold text-slate-300 mb-1.5">
+                                <i class="fa-solid fa-fingerprint text-indigo-400 ml-1"></i>
+                                کد هنرجویی (اختیاری)
+                            </label>
+                            <input
+                                type="text"
+                                id="login-student-code"
+                                value=""
+                                placeholder="مثلاً: ۹۸۴۵۱۲۳۰۱"
+                                class="w-full bg-slate-900/90 border border-slate-700 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/30 rounded-xl px-4 py-3 text-white font-bold text-sm outline-none transition"
+                            />
+                        </div>
+
+                        <div>
+                            <label for="login-gpa" class="block text-xs font-bold text-slate-300 mb-1.5">
+                                <i class="fa-solid fa-star text-amber-400 ml-1"></i>
+                                پایه تحصیلی یا سن
+                            </label>
+                            <input
+                                type="text"
+                                id="login-gpa"
+                                value=""
+                                placeholder="مثلاً: ۱۹.۷۵"
+                                class="w-full bg-slate-900/90 border border-slate-700 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/30 rounded-xl px-4 py-3 text-white font-bold text-sm outline-none transition"
+                            />
+                        </div>
+
+                        <div class="sm:col-span-2">
+                            <label for="login-school" class="block text-xs font-bold text-slate-300 mb-1.5">
+                                <i class="fa-solid fa-school text-indigo-400 ml-1"></i>
+                                نام مدرسه یا محل تحصیل
+                            </label>
+                            <input
+                                type="text"
+                                id="login-school"
+                                value=""
+                                placeholder="نام مدرسه خود را وارد کنید..."
+                                class="w-full bg-slate-900/90 border border-slate-700 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/30 rounded-xl px-4 py-3 text-white font-bold text-sm outline-none transition"
+                            />
+                        </div>
+                    </div>
+
+                    <!-- Avatar Selector -->
+                    <div class="space-y-2.5">
+                        <label class="block text-xs font-bold text-slate-300">
+                            <i class="fa-solid fa-face-smile-beam text-indigo-400 ml-1"></i>
+                            انتخاب نماد (آواتار) کارنامه:
+                        </label>
+                        <div id="avatar-selector-grid" class="grid grid-cols-3 sm:grid-cols-6 gap-2.5">
+                            <!-- Rendered by JS -->
+                        </div>
+                    </div>
+
+                    <!-- Info Note -->
+                    <div class="bg-indigo-950/60 border border-indigo-500/30 rounded-2xl p-4 flex items-start gap-3 text-xs text-indigo-200 leading-relaxed">
+                        <i class="fa-solid fa-shield-halved text-indigo-400 text-base mt-0.5"></i>
+                        <div>
+                            <strong>بدون پیش‌داوری:</strong> در هیچ‌جای آزمون مستقیم نمی‌پرسیم «به هوش مصنوعی علاقه داری یا وب؟». هیچ جواب درست یا غلطی وجود ندارد و گزینه‌ها تصادفی چیده می‌شوند تا علاقه واقعی تو سنجیده شود و بهترین مسیر یادگیری برایت پیشنهاد شود.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Left Column: Scenario Selection (3 Independent Story Banks) (5 cols) -->
+                <div class="lg:col-span-5 glass-card rounded-3xl p-6 sm:p-8 shadow-2xl space-y-5 flex flex-col justify-between">
+                    <div class="space-y-4">
+                        <div class="space-y-1 border-b border-white/10 pb-4">
+                            <div class="flex items-center justify-between">
+                                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-purple-500/15 border border-purple-400/30 text-purple-300 text-xs font-bold">
+                                    <i class="fa-solid fa-layer-group"></i>
+                                    ۳ بانک سوال مستقل برای آزمون مجدد
+                                </span>
+                                <button
+                                    type="button"
+                                    onclick="selectNextUnplayedScenario()"
+                                    class="text-[11px] font-bold text-emerald-300 hover:text-emerald-200 underline underline-offset-4"
+                                >
+                                    انتخاب خودکار سناریوی جدید
+                                </button>
+                            </div>
+                            <h3 class="text-lg sm:text-xl font-black text-white pt-1">انتخاب سناریوی داستانی آزمون</h3>
+                            <p class="text-xs text-slate-400 leading-relaxed">
+                                هر سناریو دارای ۱۰ ماموریت اولویت‌بندی و ۴ مرحله سلسله‌مراتبی کاملاً متفاوت است تا بتوانی ۳ بار با سوالات کاملاً جدید خودت را محک بزنی:
+                            </p>
+                        </div>
+
+                        <!-- 3 Scenario Cards -->
+                        <div id="login-scenarios-list" class="space-y-3">
+                            <!-- Rendered dynamically by JS -->
+                        </div>
+                    </div>
+
+                    <!-- Submit Login & Start Selected Scenario Button -->
+                    <div class="pt-4 border-t border-white/10">
+                        <button
+                            type="button"
+                            onclick="handleLoginAndStartScenario()"
+                            class="w-full py-4 px-6 rounded-2xl bg-gradient-to-l from-indigo-600 via-purple-600 to-indigo-600 hover:from-indigo-500 hover:to-purple-500 text-white font-black text-base shadow-xl shadow-indigo-600/30 flex items-center justify-center gap-3 transition-all transform hover:-translate-y-0.5 active:scale-[0.99]"
+                        >
+                            <span id="btn-start-scenario-text">ورود و شروع سناریوی ۱ (پروژه X)</span>
+                            <i class="fa-solid fa-rocket"></i>
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ========================================================= -->
+        <!-- STEP 2: RANKING 1 TO 10 INDIRECT TASKS (ACTIVE SCENARIO)  -->
+        <!-- ========================================================= -->
+        <section id="step-2" class="hidden space-y-6">
+            <div class="glass-card rounded-3xl p-6 sm:p-8 shadow-2xl space-y-6">
+                <!-- Scenario Header & Controls -->
+                <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4 border-b border-white/10 pb-5">
+                    <div class="space-y-2">
+                        <div class="flex flex-wrap items-center gap-2">
+                            <span id="step2-scenario-badge" class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-amber-500/15 border border-amber-400/30 text-amber-300 text-xs font-extrabold">
+                                سناریوی ۱: پروژه X
+                            </span>
+                            <span class="text-xs text-slate-400 font-semibold">• بخش اول: اولویت‌بندی کارها از ۱ تا ۱۰</span>
+                        </div>
+                        <h2 id="step2-scenario-title" class="text-xl sm:text-2xl font-black text-white">
+                            برای انجام این ماموریت، از کار ۱ تا ۱۰ کدام را اول و کدام را بعد انجام می‌دهی؟
+                        </h2>
+                        <p id="step2-scenario-desc" class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                            توضیحات سناریو...
+                        </p>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="flex flex-wrap items-center gap-2 shrink-0">
+                        <button
+                            type="button"
+                            onclick="shuffleTasksOrder()"
+                            class="px-3.5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-white/10 text-xs font-bold flex items-center gap-2 transition"
+                        >
+                            <i class="fa-solid fa-shuffle text-indigo-400"></i>
+                            <span>بُر زدن کارت‌ها</span>
+                        </button>
+                        <button
+                            type="button"
+                            onclick="autoFillRandomRanks()"
+                            class="px-3.5 py-2.5 rounded-xl bg-indigo-500/20 hover:bg-indigo-500/30 text-indigo-300 border border-indigo-400/30 text-xs font-bold flex items-center gap-2 transition"
+                        >
+                            <i class="fa-solid fa-wand-magic-sparkles"></i>
+                            <span>چیدمان تصادفی سریع (تست)</span>
+                        </button>
+                        <button
+                            type="button"
+                            onclick="resetAllRanks()"
+                            class="px-3.5 py-2.5 rounded-xl bg-rose-500/15 hover:bg-rose-500/25 text-rose-300 border border-rose-500/30 text-xs font-bold flex items-center gap-2 transition"
+                        >
+                            <i class="fa-solid fa-rotate-right"></i>
+                            <span>پاک کردن اولویت‌ها</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 10-Slot Visual Priority Bar -->
+                <div class="bg-slate-900/80 border border-white/10 rounded-2xl p-4 space-y-3">
+                    <div class="flex items-center justify-between text-xs">
+                        <span class="font-bold text-slate-300">
+                            <i class="fa-solid fa-ranking-star text-indigo-400 ml-1"></i>
+                            ترتیب انتخاب‌های تو (از کار اول تا کار دهم):
+                        </span>
+                        <span id="rank-counter-badge" class="font-extrabold text-indigo-300 bg-indigo-500/15 px-3 py-1 rounded-lg border border-indigo-500/30">
+                            ۰ از ۱۰ کار اولویت‌بندی شده
+                        </span>
+                    </div>
+                    <div id="priority-slots-bar" class="grid grid-cols-5 sm:grid-cols-10 gap-2">
+                        <!-- Rendered by JS -->
+                    </div>
+                </div>
+
+                <!-- 10 Indirect Shuffled Task Cards Grid -->
+                <div id="tasks-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- Rendered dynamically by JS -->
+                </div>
+
+                <!-- Footer Navigation -->
+                <div class="pt-4 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <button
+                        type="button"
+                        onclick="goToStep(1)"
+                        class="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-sm flex items-center justify-center gap-2 transition"
+                    >
+                        <i class="fa-solid fa-arrow-right"></i>
+                        <span>تغییر سناریو / مشخصات</span>
+                    </button>
+
+                    <button
+                        type="button"
+                        onclick="proceedToStep3()"
+                        class="w-full sm:w-auto px-8 py-4 rounded-xl bg-gradient-to-l from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-extrabold text-sm sm:text-base shadow-lg shadow-indigo-600/30 flex items-center justify-center gap-3 transition"
+                    >
+                        <span>ثبت اولویت‌های ۱ تا ۱۰ و ورود به مراحل سلسله‌مراتبی</span>
+                        <i class="fa-solid fa-arrow-left"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================================= -->
+        <!-- STEP 3: 4 HIERARCHICAL INDIRECT DECISION STEPS            -->
+        <!-- ========================================================= -->
+        <section id="step-3" class="hidden space-y-6">
+            <div class="glass-card rounded-3xl p-6 sm:p-8 shadow-2xl space-y-6">
+                <!-- Header -->
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/10 pb-5">
+                    <div class="space-y-1.5">
+                        <div class="flex flex-wrap items-center gap-2">
+                            <span id="tree-scenario-tag" class="text-xs font-extrabold px-3 py-1 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-400/30">
+                                پروژه X
+                            </span>
+                            <span id="tree-step-badge" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-purple-500/15 border border-purple-400/30 text-purple-300 text-xs font-bold">
+                                مرحله ۱ از ۴ در درخت تصمیم سلسله‌مراتبی
+                            </span>
+                        </div>
+                        <h2 id="tree-question-title" class="text-xl sm:text-2xl font-black text-white leading-snug">
+                            عنوان موقعیت سلسله‌مراتبی
+                        </h2>
+                    </div>
+
+                    <button
+                        type="button"
+                        onclick="autoFillTreeAnswers()"
+                        class="self-start sm:self-center px-3.5 py-2.5 rounded-xl bg-indigo-500/15 hover:bg-indigo-500/25 text-indigo-300 border border-indigo-400/30 text-xs font-bold flex items-center gap-2 transition shrink-0"
+                    >
+                        <i class="fa-solid fa-bolt"></i>
+                        <span>تکمیل سریع ۴ مرحله (تست)</span>
+                    </button>
+                </div>
+
+                <!-- Stepper Breadcrumb -->
+                <div id="tree-breadcrumb" class="flex flex-wrap items-center gap-2 text-xs">
+                    <!-- Rendered by JS -->
+                </div>
+
+                <!-- Dynamic Hierarchical Story Bridge -->
+                <div class="bg-indigo-950/60 border border-indigo-500/30 rounded-2xl p-4 text-xs sm:text-sm text-indigo-200 leading-relaxed flex items-start gap-3">
+                    <i class="fa-solid fa-compass text-indigo-400 text-lg mt-0.5 shrink-0"></i>
+                    <p id="tree-story-bridge-text"></p>
+                </div>
+
+                <!-- Selection Instruction -->
+                <div class="bg-slate-900/75 border border-white/10 rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div class="text-xs sm:text-sm text-slate-200 font-medium">
+                        <i class="fa-solid fa-hand-pointer text-amber-400 ml-1.5"></i>
+                        از بین ۴ واکنش زیر، با کلیک اول <strong class="text-emerald-400">«مسیر اولویت اول»</strong> و با کلیک دوم <strong class="text-amber-300">«مسیر اولویت دوم»</strong> خودت را مشخص کن:
+                    </div>
+                    <div id="tree-selection-status" class="text-xs font-bold px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300 shrink-0">
+                        ۰ از ۲ اولویت انتخاب شده
+                    </div>
+                </div>
+
+                <!-- 4 Shuffled Options Grid -->
+                <div id="tree-options-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- Rendered by JS -->
+                </div>
+
+                <!-- Footer Navigation -->
+                <div class="pt-4 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <button
+                        type="button"
+                        onclick="prevTreeQuestion()"
+                        class="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-sm flex items-center justify-center gap-2 transition"
+                    >
+                        <i class="fa-solid fa-arrow-right"></i>
+                        <span id="btn-tree-prev-label">بازگشت به مرحله قبل</span>
+                    </button>
+
+                    <button
+                        type="button"
+                        onclick="nextTreeQuestion()"
+                        class="w-full sm:w-auto px-8 py-4 rounded-xl bg-gradient-to-l from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-extrabold text-sm sm:text-base shadow-lg shadow-indigo-600/30 flex items-center justify-center gap-3 transition"
+                    >
+                        <span id="btn-tree-next-label">ثبت و رفتن به مرحله بعدی</span>
+                        <i class="fa-solid fa-arrow-left"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ========================================================= -->
+        <!-- STEP 4: FINAL REPORT CARD & NEW SCENARIO RETAKE ENGINE    -->
+        <!-- ========================================================= -->
+        <section id="step-4" class="hidden space-y-6">
+            <div class="glass-card rounded-3xl p-6 sm:p-10 shadow-2xl space-y-8 relative overflow-hidden">
+                <div class="absolute -top-24 -left-24 w-80 h-80 bg-indigo-500/15 rounded-full blur-3xl pointer-events-none"></div>
+                <div class="absolute -bottom-24 -right-24 w-80 h-80 bg-emerald-500/15 rounded-full blur-3xl pointer-events-none"></div>
+
+                <!-- Logged-In Student Official Report Header Card -->
+                <div class="bg-slate-900/90 border border-white/10 rounded-3xl p-5 sm:p-6 flex flex-col md:flex-row items-center justify-between gap-5">
+                    <div class="flex flex-col sm:flex-row items-center gap-4 text-center sm:text-right">
+                        <div id="report-avatar-box" class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-indigo-600 to-purple-500 flex items-center justify-center text-3xl text-white shadow-xl shrink-0">
+                            <i class="fa-solid fa-user-astronaut"></i>
+                        </div>
+                        <div class="space-y-1">
+                            <div class="flex flex-wrap items-center justify-center sm:justify-start gap-2">
+                                <h2 id="report-full-name" class="text-xl sm:text-2xl font-black text-white">صبا رادمنش</h2>
+                                <span id="report-scenario-badge" class="text-xs font-extrabold px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/30">
+                                    سناریوی ۱: پروژه X
+                                </span>
+                            </div>
+                            <div class="flex flex-wrap items-center justify-center sm:justify-start gap-x-4 gap-y-1 text-xs text-slate-400">
+                                <span id="report-school"><i class="fa-solid fa-school text-indigo-400 ml-1"></i>آموزشگاه توکاپیشرو</span>
+                                <span id="report-student-code"><i class="fa-solid fa-id-badge text-indigo-400 ml-1"></i>کد هنرجویی: ۹۸۴۵۱۲۳۰۱</span>
+                                <span id="report-gpa"><i class="fa-solid fa-star text-amber-400 ml-1"></i>پایه/سن: ۱۹.۷۵</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-2 no-print">
+                        <button
+                            type="button"
+                            onclick="copyFinalSummaryText()"
+                            class="px-3.5 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-white/10 text-xs font-bold flex items-center gap-1.5 transition"
+                        >
+                            <i class="fa-regular fa-copy text-indigo-400"></i>
+                            <span>کپی نتیجه</span>
+                        </button>
+                        <button
+                            type="button"
+                            onclick="window.print()"
+                            class="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-extrabold flex items-center gap-1.5 shadow-lg shadow-emerald-600/30 transition"
+                        >
+                            <i class="fa-solid fa-print"></i>
+                            <span>چاپ کارنامه</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- ========================================================= -->
+                <!-- EXACT REQUIRED OUTPUT SENTENCES (100% AND 80%)            -->
+                <!-- ========================================================= -->
+                <div class="bg-gradient-to-br from-slate-900/95 via-indigo-950/85 to-slate-900/95 border-2 border-indigo-400/50 rounded-3xl p-6 sm:p-8 shadow-2xl space-y-5">
+                    <div class="flex items-center justify-between flex-wrap gap-2">
+                        <span class="text-xs sm:text-sm font-extrabold text-indigo-300 flex items-center gap-2">
+                            <i class="fa-solid fa-award text-amber-400 text-lg"></i>
+                            خروجی نهایی تطابق تیپ شخصیتی و شغل بر اساس پاسخ‌های غیرمستقیم تو:
+                        </span>
+                        <span class="text-[11px] font-bold text-emerald-300 bg-emerald-500/15 px-3 py-1 rounded-full border border-emerald-500/30">
+                            تحلیل هوشمند توکاپیشرو
+                        </span>
+                    </div>
+
+                    <!-- Primary 100% Match Box -->
+                    <div class="bg-emerald-500/10 border border-emerald-400/40 rounded-2xl p-5 flex flex-col sm:flex-row items-start sm:items-center gap-4">
+                        <div class="w-14 h-14 rounded-2xl bg-emerald-500 text-slate-950 font-black text-base flex items-center justify-center shrink-0 shadow-lg shadow-emerald-500/30">
+                            ۱۰۰٪
+                        </div>
+                        <div class="space-y-1.5">
+                            <p id="exact-sentence-100" class="text-base sm:text-xl font-black text-white leading-relaxed"></p>
+                            <p id="exact-sub-100" class="text-xs sm:text-sm text-emerald-300 font-bold"></p>
+                        </div>
+                    </div>
+
+                    <!-- Secondary 80% Match Box -->
+                    <div class="bg-indigo-500/10 border border-indigo-400/40 rounded-2xl p-5 flex flex-col sm:flex-row items-start sm:items-center gap-4">
+                        <div class="w-14 h-14 rounded-2xl bg-indigo-500 text-white font-black text-base flex items-center justify-center shrink-0 shadow-lg shadow-indigo-500/30">
+                            ۸۰٪
+                        </div>
+                        <div class="space-y-1.5">
+                            <p id="exact-sentence-80" class="text-base sm:text-xl font-extrabold text-slate-100 leading-relaxed"></p>
+                            <p id="exact-sub-80" class="text-xs sm:text-sm text-indigo-300 font-bold"></p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ========================================================= -->
+                <!-- TOP 2 RECOMMENDED HIGH SCHOOL STREAMS DETAIL CARDS        -->
+                <!-- ========================================================= -->
+                <div id="top-streams-cards" class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <!-- Rendered dynamically -->
+                </div>
+
+                <!-- ========================================================= -->
+                <!-- 4 ACADEMIC STREAMS COMPARISON CHART                       -->
+                <!-- ========================================================= -->
+                <div class="bg-slate-900/80 border border-white/10 rounded-3xl p-6 space-y-5">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                        <h3 class="text-base sm:text-lg font-black text-white flex items-center gap-2">
+                            <i class="fa-solid fa-chart-column text-indigo-400"></i>
+                            <span>نمودار درصد گرایش پنهان تو به هر ۴ مسیر برنامه‌نویسی و هوش مصنوعی در این سناریو:</span>
+                        </h3>
+                        <span class="text-xs text-slate-400">هوش مصنوعی • الگوریتم • وب و اپلیکیشن • بازی‌سازی و رباتیک</span>
+                    </div>
+                    <div id="four-streams-bars" class="space-y-4">
+                        <!-- Rendered dynamically -->
+                    </div>
+                </div>
+
+                <!-- ========================================================= -->
+                <!-- DECLASSIFIED SECRET REVEAL FOR CURRENT SCENARIO           -->
+                <!-- ========================================================= -->
+                <div class="bg-slate-900/80 border border-amber-500/30 rounded-3xl p-6 space-y-5">
+                    <div class="space-y-1">
+                        <span class="text-xs font-extrabold text-amber-400 flex items-center gap-1.5">
+                            <i class="fa-solid fa-magnifying-glass-chart"></i>
+                            رمزگشایی سوالات غیرمستقیم این سناریو
+                        </span>
+                        <h3 class="text-base sm:text-lg font-black text-white">
+                            چطور از روی انتخاب‌های داستانی متوجه علاقه تو به این مسیر شدیم؟
+                        </h3>
+                        <p class="text-xs text-slate-400">
+                            در کارت‌های زیر می‌بینی که اولویت‌های اولی که در این سناریو انتخاب کردی، در واقع نماینده‌ی مخفی کدام مسیر برنامه‌نویسی بوده‌اند:
+                        </p>
+                    </div>
+                    <div id="declassified-choices-list" class="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                        <!-- Rendered dynamically -->
+                    </div>
+                </div>
+
+                <!-- ========================================================= -->
+                <!-- RETAKE EXAM WITH NEW SCENARIO (3 SCENARIOS ENGINE)        -->
+                <!-- ========================================================= -->
+                <div class="bg-gradient-to-r from-indigo-950/90 via-slate-900 to-purple-950/90 border-2 border-purple-500/40 rounded-3xl p-6 sm:p-8 space-y-6 no-print">
+                    <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+                        <div class="space-y-1.5">
+                            <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/20 text-purple-300 border border-purple-400/30 text-xs font-extrabold">
+                                <i class="fa-solid fa-rotate"></i>
+                                سنجش مجدد با داستان و سوالات کاملاً جدید
+                            </span>
+                            <h3 class="text-xl sm:text-2xl font-black text-white">
+                                می‌خواهی با یک سناریوی جدید دوباره خودت را محک بزنی؟
+                            </h3>
+                            <p class="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                                بدون نیاز به ورود مجدد، می‌توانی همین الان وارد یکی از سناریوهای دیگر شوی تا ببینی آیا در یک موقعیت داستانی متفاوت هم همان مسیر و تیپ شخصیتی را کسب می‌کنی یا نه!
+                            </p>
+                        </div>
+
+                        <button
+                            type="button"
+                            id="btn-next-unplayed-scenario"
+                            onclick="startNextScenarioDirectly()"
+                            class="px-7 py-4 rounded-2xl bg-gradient-to-l from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-black text-sm sm:text-base shadow-xl shadow-emerald-500/25 flex items-center justify-center gap-2.5 shrink-0 transition transform hover:-translate-y-0.5"
+                        >
+                            <i class="fa-solid fa-play"></i>
+                            <span id="btn-next-unplayed-label">شروع آزمون مجدد با سناریوی بعدی</span>
+                        </button>
+                    </div>
+
+                    <!-- 3 Scenario Switcher Cards in Report Page -->
+                    <div id="report-scenarios-switcher" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <!-- Rendered dynamically -->
+                    </div>
+                </div>
+
+                <!-- ========================================================= -->
+                <!-- HISTORY COMPARISON OF COMPLETED SCENARIOS                 -->
+                <!-- ========================================================= -->
+                <div class="bg-slate-900/85 border border-white/10 rounded-3xl p-6 space-y-4">
+                    <div class="flex items-center justify-between flex-wrap gap-2">
+                        <h3 class="text-base sm:text-lg font-black text-white flex items-center gap-2">
+                            <i class="fa-solid fa-clock-rotate-left text-emerald-400"></i>
+                            <span>تاریخچه و مقایسه آزمون‌های انجام‌شده توسط <span id="history-student-name" class="text-indigo-300">صبا</span>:</span>
+                        </h3>
+                        <span id="history-count-tag" class="text-xs text-slate-400 font-bold">۱ سناریو تکمیل شده</span>
+                    </div>
+                    <div id="scenario-history-list" class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <!-- Rendered dynamically -->
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="max-w-6xl mx-auto px-4 pt-10 pb-4 no-print">
+        <div class="glass-card rounded-3xl p-6 flex flex-wrap items-center justify-between gap-5">
+            <div class="flex items-center gap-4">
+                <img data-logo alt="لوگوی آموزشگاه توکاپیشرو" class="h-14 w-auto rounded-xl bg-white px-3 py-1.5">
+                <div>
+                    <div class="font-black text-white text-sm sm:text-base">آموزشگاه توکاپیشرو (Pishro AI Academy)</div>
+                    <div class="text-xs text-slate-300 leading-relaxed">آموزش برنامه‌نویسی و هوش مصنوعی برای نسل آینده</div>
+                </div>
+            </div>
+            <div class="text-xs text-indigo-200 font-bold bg-indigo-500/15 border border-indigo-400/30 rounded-2xl px-4 py-3 leading-relaxed">
+                نتیجه آزمون یک راهنمای اولیه است. برای انتخاب مسیر آموزشی با مشاوران آموزشگاه صحبت کن.
+            </div>
+        </div>
+    </footer>
+
+    <!-- ========================================================= -->
+    <!-- COMPLETE JAVASCRIPT ENGINE & 3 SCENARIO QUESTION BANKS    -->
+    <!-- ========================================================= -->
+    <script>
+        const LOGO_SRC = "data:image/png;base64,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";
+        document.querySelectorAll('img[data-logo]').forEach(i => i.src = LOGO_SRC);
+        (function(){ const l=document.createElement('link'); l.rel='icon'; l.href="data:image/png;base64,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"; document.head.appendChild(l); })();
+
+        // ===== 1. AVATARS =====
+        const AVATARS = [
+            { id: 0, icon: 'fa-robot', label: 'مهندس ربات', color: 'from-indigo-500 to-purple-600' },
+            { id: 1, icon: 'fa-laptop-code', label: 'برنامه‌نویس', color: 'from-emerald-500 to-teal-600' },
+            { id: 2, icon: 'fa-brain', label: 'ذهن هوشمند', color: 'from-amber-500 to-orange-600' },
+            { id: 3, icon: 'fa-gamepad', label: 'بازی‌ساز', color: 'from-rose-500 to-pink-600' },
+            { id: 4, icon: 'fa-microchip', label: 'سازنده سخت‌افزار', color: 'from-sky-500 to-blue-600' },
+            { id: 5, icon: 'fa-rocket', label: 'کارآفرین فناوری', color: 'from-violet-500 to-fuchsia-600' }
+        ];
+
+        // ===== 2. FOUR TRACKS =====
+        const STREAMS_DATA = {
+            ai: {
+                id: 'ai', title: 'مسیر هوش مصنوعی و علم داده', shortTitle: 'هوش مصنوعی و داده',
+                personalityType: 'تیپ شخصیتی الگوکاو و مربی ماشین‌ها (Data-Explorer)',
+                badgeColor: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40',
+                barColor: 'from-emerald-500 to-teal-400', icon: 'fa-brain',
+                defaultTopJob: 'مهندس هوش مصنوعی، یادگیری ماشین و تحلیل داده',
+                careers: ['مهندس یادگیری ماشین', 'دانشمند داده', 'مهندس پردازش تصویر و زبان', 'توسعه‌دهنده چت‌بات و دستیار هوشمند', 'تحلیلگر کسب‌وکار داده‌محور'],
+                whyDescription: 'انتخاب‌هایت نشان می‌دهد از کشف الگو در دل داده‌ها، آموزش دادن به ماشین و پیش‌بینی آینده لذت می‌بری.',
+                revealReason: 'کشف الگو در داده و آموزش دادن به ماشین، هسته اصلی «هوش مصنوعی و علم داده» است.'
+            },
+            algo: {
+                id: 'algo', title: 'مسیر الگوریتم، منطق و امنیت سایبری', shortTitle: 'الگوریتم و منطق',
+                personalityType: 'تیپ شخصیتی حل‌کننده مسئله و معمار منطق (Logical-Solver)',
+                badgeColor: 'bg-sky-500/20 text-sky-300 border-sky-500/40',
+                barColor: 'from-sky-500 to-indigo-500', icon: 'fa-diagram-project',
+                defaultTopJob: 'برنامه‌نویس الگوریتم، مهندس نرم‌افزار و متخصص امنیت',
+                careers: ['مهندس نرم‌افزار', 'برنامه‌نویس مسابقات (Competitive)', 'متخصص امنیت و نفوذ‌آزمایی', 'طراح الگوریتم و بهینه‌سازی', 'مهندس زیرساخت و پایگاه داده'],
+                whyDescription: 'انتخاب‌هایت نشان می‌دهد معماهای منطقی، بهینه‌سازی و پیدا کردن راه‌حل دقیق برایت جذاب‌ترین بخش کار است.',
+                revealReason: 'شکستن مسئله به قدم‌های دقیق و بهینه‌سازی، نشانه تفکر «الگوریتمی و منطقی» است.'
+            },
+            web: {
+                id: 'web', title: 'مسیر توسعه وب و اپلیکیشن', shortTitle: 'وب و اپلیکیشن',
+                personalityType: 'تیپ شخصیتی طراح تجربه و سازنده محصول (Product-Creator)',
+                badgeColor: 'bg-amber-500/20 text-amber-300 border-amber-500/40',
+                barColor: 'from-amber-500 to-orange-500', icon: 'fa-laptop-code',
+                defaultTopJob: 'توسعه‌دهنده وب و اپلیکیشن، طراح رابط و تجربه کاربری',
+                careers: ['توسعه‌دهنده فرانت‌اند', 'توسعه‌دهنده فول‌استک', 'طراح UI/UX', 'برنامه‌نویس اپلیکیشن موبایل', 'مدیر محصول و بنیان‌گذار استارتاپ'],
+                whyDescription: 'انتخاب‌هایت نشان می‌دهد دوست داری چیزی بسازی که مردم واقعاً استفاده کنند و ارتباط با کاربر برایت مهم است.',
+                revealReason: 'ساختن محصولی زیبا و کاربردی برای مردم، شاخصه «توسعه وب و اپلیکیشن» است.'
+            },
+            maker: {
+                id: 'maker', title: 'مسیر بازی‌سازی، رباتیک و اینترنت اشیا', shortTitle: 'بازی‌سازی و رباتیک',
+                personalityType: 'تیپ شخصیتی سازنده عمل‌گرا و مخترع (Maker-Inventor)',
+                badgeColor: 'bg-purple-500/20 text-purple-300 border-purple-500/40',
+                barColor: 'from-purple-500 to-pink-500', icon: 'fa-gamepad',
+                defaultTopJob: 'بازی‌ساز، مهندس رباتیک و توسعه‌دهنده اینترنت اشیا',
+                careers: ['توسعه‌دهنده بازی (Unity / Unreal)', 'مهندس رباتیک و مکاترونیک', 'توسعه‌دهنده اینترنت اشیا (IoT)', 'برنامه‌نویس سیستم‌های نهفته', 'طراح واقعیت مجازی و افزوده'],
+                whyDescription: 'انتخاب‌هایت نشان می‌دهد عاشق ساختن و آزمودن عملی هستی و دیدن اینکه کدت یک دستگاه یا بازی را زنده می‌کند، برایت هیجان‌انگیز است.',
+                revealReason: 'ساختن و راه‌اندازی عملی بازی، ربات یا دستگاه، نشان‌دهنده استعداد «بازی‌سازی و رباتیک» است.'
+            }
+        };
+
+        // ===== 3. SCENARIO BANKS (compact builders) =====
+        const T = (id, stream, icon, title, desc) => ({ id, stream, icon, title, desc,
+            specificJob: STREAMS_DATA[stream].defaultTopJob, revealReason: STREAMS_DATA[stream].revealReason });
+        const Q = (sc, n, title, defaultBridge, o) => ({ stepNumber: n, title, defaultBridge,
+            options: Object.keys(o).map(k => ({ id: `${sc}_q${n}_${k}`, stream: k, text: o[k][0], jobHint: STREAMS_DATA[k].shortTitle, nextBridgeText: '' })) });
+
+        const SCENARIOS_BANK = {
+            scenario_1: {
+                id: 'scenario_1', codeName: 'پروژه X',
+                title: 'سناریوی ۱: راه‌اندازی استارتاپ فناوری (پروژه X)',
+                shortTitle: 'پروژه X: استارتاپ فناوری',
+                subtitle: 'از ایده تا اپلیکیشنی که هزاران نفر استفاده می‌کنند',
+                icon: 'fa-rocket', themeBadge: 'bg-emerald-500/20 text-emerald-300 border-emerald-400/30',
+                description: 'تو با یک تیم کوچک، استارتاپ خودت را راه می‌اندازی. ۱۰ کار زیر روی میز است؛ به ترتیب علاقه‌ات روی کارت‌ها کلیک کن تا از اولویت ۱ (کاری که اول سراغش می‌روی) تا اولویت ۱۰ شماره‌گذاری شوند.',
+                tasks: [
+                    T('s1_t1', 'ai', 'fa-seedling', 'آموزش مدلی که از روی عکس، نوع گیاه را تشخیص بدهد', 'هزاران عکس را به کامپیوتر نشان می‌دهی تا خودش یاد بگیرد گیاه‌ها را از هم تشخیص دهد.'),
+                    T('s1_t2', 'algo', 'fa-route', 'پیدا کردن سریع‌ترین مسیر برای پیک‌های اپلیکیشن', 'نوشتن الگوریتمی که از میان هزاران خیابان، کوتاه‌ترین مسیر رساندن سفارش‌ها را پیدا کند.'),
+                    T('s1_t3', 'web', 'fa-palette', 'طراحی صفحه اصلی ساده و زیبا برای اپلیکیشن', 'چیدن دکمه‌ها و رنگ‌ها طوری که کاربر بدون راهنما بفهمد باید کجا کلیک کند.'),
+                    T('s1_t4', 'maker', 'fa-microchip', 'ساخت دستگاهی که رطوبت خاک گلدان را بسنجد', 'وصل کردن سنسور به برد الکترونیکی و برنامه‌ریزی آن تا گلدان خودش آبیاری شود.'),
+                    T('s1_t5', 'ai', 'fa-chart-pie', 'پیدا کردن الگو در داده‌های خرید کاربران', 'بررسی جدول‌های بزرگ داده تا بفهمی مردم چه چیزهایی را با هم می‌خرند و خرید بعدی‌شان را حدس بزنی.'),
+                    T('s1_t6', 'algo', 'fa-lock', 'شکستن یک رمز ساده و نوشتن برنامه‌ای که آن را خودکار باز کند', 'کشف قاعده منطقی پشت یک پیام رمزی و تبدیل آن به چند خط کد.'),
+                    T('s1_t7', 'web', 'fa-globe', 'ساخت سایت معرفی استارتاپ با HTML و CSS', 'نوشتن صفحه‌ای که هم روی موبایل و هم روی کامپیوتر زیبا و سریع نمایش داده شود.'),
+                    T('s1_t8', 'maker', 'fa-gamepad', 'ساخت یک بازی ساده برای جذب مخاطب', 'طراحی شخصیت و مرحله و برنامه‌نویسی حرکت‌ها تا بازیکن بتواند واقعاً بازی کند.'),
+                    T('s1_t9', 'ai', 'fa-comments', 'ساخت چت‌بات پاسخگو به سوال مشتری‌ها', 'تنظیم یک هوش مصنوعی تا سوال‌های متداول کاربران را درست و مودبانه جواب بدهد.'),
+                    T('s1_t10', 'web', 'fa-bullhorn', 'معرفی ایده استارتاپ به سرمایه‌گذار', 'توضیح جذاب اینکه اپلیکیشن چه مشکلی را حل می‌کند و چرا مردم از آن استفاده می‌کنند.')
+                ],
+                questions: [
+                    Q('s1', 1, 'مرحله ۱ از ۴: اولین روز کاری تیم', 'تیم دور هم جمع شده و ایده اپلیکیشن آماده است. اولین کاری که سراغش می‌روی چیست؟', {
+                        ai: ['جمع‌آوری نمونه داده و بررسی اینکه چه اطلاعاتی می‌تواند به اپلیکیشن «هوشمندی» بدهد.'],
+                        algo: ['تقسیم مسئله به قدم‌های کوچک و نوشتن منطق اصلی برنامه روی کاغذ.'],
+                        web: ['کشیدن طرح صفحه‌ها و مسیر حرکت کاربر در اپلیکیشن.'],
+                        maker: ['ساخت سریع یک نمونه اولیه قابل اجرا تا همه بتوانند آن را لمس کنند.'] }),
+                    Q('s1', 2, 'مرحله ۲ از ۴: باگ مرموز شب قبل از معرفی', 'یک شب قبل از معرفی، برنامه خطا می‌دهد و بخشی از اطلاعات اشتباه نمایش داده می‌شود. چه می‌کنی؟', {
+                        algo: ['منطق برنامه را خط‌به‌خط دنبال می‌کنم تا لحظه دقیق بروز خطا را پیدا کنم.'],
+                        ai: ['داده‌های ورودی را بررسی می‌کنم تا ببینم اطلاعات غیرعادی از کجا آمده‌اند.'],
+                        web: ['صفحه را روی مرورگرها و گوشی‌های مختلف تست می‌کنم تا ببینم کاربر کجا مشکل دارد.'],
+                        maker: ['با آزمون‌وخطای عملی بخش‌ها را یکی‌یکی جدا می‌کنم تا قسمت خراب پیدا شود.'] }),
+                    Q('s1', 3, 'مرحله ۳ از ۴: هجوم ناگهانی کاربران', 'بعد از معرفی، ده هزار نفر در یک ساعت وارد اپلیکیشن شده‌اند. اولویتت چیست؟', {
+                        algo: ['سریع‌تر کردن برنامه با انتخاب روش‌های بهینه‌تر برای جست‌وجو و ذخیره اطلاعات.'],
+                        web: ['ساده‌تر کردن صفحه‌ها و پاسخ دادن به پیام‌ها و نظرهای کاربران.'],
+                        ai: ['ساخت مدلی که پیش‌بینی کند فردا چند نفر وارد اپلیکیشن می‌شوند.'],
+                        maker: ['راه‌اندازی یک نمایشگر زنده در دفتر که آمار کاربران را لحظه‌ای نشان بدهد.'] }),
+                    Q('s1', 4, 'مرحله ۴ از ۴: موفقیت استارتاپ', 'استارتاپ موفق شد! دوست داری همه تو را با کدام نقش به یاد بیاورند؟', {
+                        ai: ['کسی که اپلیکیشن را باهوش کرد و از داده‌ها آینده را پیش‌بینی کرد.'],
+                        algo: ['مغز متفکری که سخت‌ترین مسئله‌ها را با دقت و سرعت حل کرد.'],
+                        web: ['طراحی که محصولی ساخت که همه عاشقش شدند.'],
+                        maker: ['مخترعی که ایده‌ها را با دست خودش به یک نمونه واقعی تبدیل کرد.'] })
+                ]
+            },
+            scenario_2: {
+                id: 'scenario_2', codeName: 'پروژه Y',
+                title: 'سناریوی ۲: ساخت شهر هوشمند آینده (پروژه Y)',
+                shortTitle: 'پروژه Y: شهر هوشمند ۲۰۵۰',
+                subtitle: 'برنامه‌نویسی و مدیریت فناوری‌های یک کلان‌شهر آینده',
+                icon: 'fa-city', themeBadge: 'bg-sky-500/20 text-sky-300 border-sky-400/30',
+                description: 'تو عضو تیم فناوری «شهر هوشمند ۲۰۵۰» هستی! ۱۰ پروژه زیر برای راه‌اندازی شهر تعریف شده است؛ آن‌ها را از اولویت ۱ تا ۱۰ رتبه‌بندی کن.',
+                tasks: [
+                    T('s2_t1', 'maker', 'fa-traffic-light', 'برنامه‌ریزی چراغ‌های راهنمای هوشمند و سنسورهای خیابان', 'کدنویسی سنسورها و کنترلرها تا چراغ‌ها بر اساس شلوغی واقعی تغییر کنند.'),
+                    T('s2_t2', 'ai', 'fa-video', 'ساخت سیستمی که با دوربین، شلوغی ترافیک را تشخیص دهد', 'آموزش یک مدل بینایی ماشین تا ماشین‌ها را از تصویر بشمارد و ترافیک را پیش‌بینی کند.'),
+                    T('s2_t3', 'algo', 'fa-bus', 'محاسبه بهترین زمان‌بندی اتوبوس‌ها', 'نوشتن الگوریتمی که زمان انتظار مسافران را در کل شهر کمینه کند.'),
+                    T('s2_t4', 'web', 'fa-mobile-screen', 'طراحی اپلیکیشن شهروندی برای پرداخت قبض و رزرو', 'ساخت اپلیکیشنی ساده که همه سنین بتوانند راحت از آن استفاده کنند.'),
+                    T('s2_t5', 'maker', 'fa-robot', 'ساخت ربات خودران حمل بسته در پیاده‌روها', 'برنامه‌ریزی ربات تا موانع را ببیند و مسیرش را خودش پیدا کند.'),
+                    T('s2_t6', 'algo', 'fa-shield-halved', 'محافظت از سامانه شهر در برابر نفوذ هکرها', 'پیدا کردن نقطه‌ضعف‌های سیستم و نوشتن کدی که راه نفوذ را ببندد.'),
+                    T('s2_t7', 'ai', 'fa-bolt', 'پیش‌بینی مصرف برق شهر با داده سال‌های قبل', 'ساخت مدلی که از الگوی گذشته، مصرف فردا را حدس بزند تا برق هدر نرود.'),
+                    T('s2_t8', 'web', 'fa-people-group', 'ساخت وب‌سایت مشارکت مردمی', 'طراحی سایتی که مردم پیشنهاد و گزارش خود را ثبت کنند و نتیجه را ببینند.'),
+                    T('s2_t9', 'maker', 'fa-plane', 'برنامه‌نویسی پهپاد برای بازرسی پل‌ها', 'کدنویسی مسیر پرواز و دوربین پهپاد تا ترک‌های پل را بدون خطر پیدا کند.'),
+                    T('s2_t10', 'algo', 'fa-sitemap', 'طراحی ساختار ذخیره اطلاعات میلیون‌ها شهروند', 'انتخاب ساختار داده‌ای که جست‌وجو در میان میلیون‌ها رکورد در چند ثانیه انجام شود.')
+                ],
+                questions: [
+                    Q('s2', 1, 'مرحله ۱ از ۴: افتتاح مرکز فرمان شهر', 'صفحه‌های مرکز فرمان روشن شده‌اند ولی هنوز چیزی تنظیم نیست. اول چه می‌کنی؟', {
+                        ai: ['بررسی داده‌های سنسورها برای پیدا کردن الگوهای تکراری شهر.'],
+                        algo: ['نوشتن قوانین دقیق که تصمیم‌های سیستم را به ترتیب درست اجرا کند.'],
+                        web: ['طراحی داشبوردی که اطلاعات شهر را برای مسئولان ساده و خوانا نشان بدهد.'],
+                        maker: ['وصل کردن سنسورها و آزمودن واقعی هر دستگاه.'] }),
+                    Q('s2', 2, 'مرحله ۲ از ۴: قطعی برق در یک منطقه', 'برق یک منطقه قطع شده است. به کدام کار می‌پردازی؟', {
+                        ai: ['با یک مدل پیش‌بینی می‌کنم کدام مناطق بعدی در خطر قطعی هستند.'],
+                        algo: ['بهترین ترتیب وصل دوباره برق مناطق را با کمترین زمان محاسبه می‌کنم.'],
+                        web: ['صفحه‌ای برای اطلاع‌رسانی به شهروندان می‌سازم تا نگران نباشند.'],
+                        maker: ['به ایستگاه می‌روم و کنترلر خراب را عیب‌یابی و دوباره برنامه‌ریزی می‌کنم.'] }),
+                    Q('s2', 3, 'مرحله ۳ از ۴: حمله سایبری شبانه', 'هکرها به سامانه شهر حمله کرده‌اند. واکنش تو چیست؟', {
+                        algo: ['مسیر نفوذ را ردیابی می‌کنم و ضعف منطقی سیستم را می‌بندم.'],
+                        ai: ['مدلی می‌سازم که رفتار مشکوک را از رفتار عادی تشخیص بدهد.'],
+                        web: ['به شهروندان شفاف اطلاع می‌دهم و صفحه راهنمای تغییر رمز را می‌سازم.'],
+                        maker: ['دستگاه‌های آلوده را جدا می‌کنم و یکی‌یکی دوباره راه‌اندازی‌شان می‌کنم.'] }),
+                    Q('s2', 4, 'مرحله ۴ از ۴: جشن افتتاح شهر', 'شهر با موفقیت راه افتاد! دوست داری چه نقشی به نامت ثبت شود؟', {
+                        ai: ['کسی که شهر را باهوش کرد و مشکلات را پیش از وقوع پیش‌بینی کرد.'],
+                        algo: ['مهندسی که پشت صحنه همه چیز را بهینه و امن نگه داشت.'],
+                        web: ['سازنده اپلیکیشنی که هر شهروند هر روز از آن استفاده می‌کند.'],
+                        maker: ['مخترعی که ربات‌ها و دستگاه‌های شهر را ساخت و زنده کرد.'] })
+                ]
+            },
+            scenario_3: {
+                id: 'scenario_3', codeName: 'پروژه Z',
+                title: 'سناریوی ۳: پایگاه هوشمند روی مریخ (پروژه Z)',
+                shortTitle: 'پروژه Z: پایگاه مریخ',
+                subtitle: 'برنامه‌نویسی سیستم‌های یک پایگاه فضایی در سیاره سرخ',
+                icon: 'fa-satellite', themeBadge: 'bg-purple-500/20 text-purple-300 border-purple-400/30',
+                description: 'تو برنامه‌نویس ارشد اولین پایگاه انسانی روی مریخ هستی! ۱۰ ماموریت زیر در انتظار توست؛ آن‌ها را از اولویت ۱ تا ۱۰ رتبه‌بندی کن.',
+                tasks: [
+                    T('s3_t1', 'maker', 'fa-truck-monster', 'ساخت و برنامه‌نویسی کاوشگر چرخ‌دار نمونه‌برداری', 'کدنویسی حرکت و بازوی کاوشگر تا سنگ‌های مریخ را خودش جمع کند.'),
+                    T('s3_t2', 'ai', 'fa-mountain', 'آموزش سیستم تشخیص سنگ و مواد معدنی از روی تصویر', 'یاد دادن به یک مدل که از عکس‌ها بفهمد کدام نمونه ارزشمند است.'),
+                    T('s3_t3', 'algo', 'fa-compass', 'محاسبه مسیر بهینه برای بیشترین عکس‌برداری با کمترین انرژی', 'نوشتن الگوریتمی که باتری کاوشگر را هوشمندانه خرج کند.'),
+                    T('s3_t4', 'web', 'fa-display', 'ساخت پنل کنترل ساده برای فضانوردان', 'طراحی صفحه‌ای که در شرایط اضطراری هم همه چیز را شفاف و قابل فهم نشان بدهد.'),
+                    T('s3_t5', 'ai', 'fa-microphone', 'ساخت دستیار صوتی که با فضانوردان صحبت کند', 'آموزش هوش مصنوعی تا دستورها را بفهمد و محترمانه جواب بدهد.'),
+                    T('s3_t6', 'maker', 'fa-seedling', 'برنامه‌نویسی گلخانه خودکار برای کشت سبزی', 'کنترل نور، آب و دما با سنسور تا گیاه‌ها در مریخ رشد کنند.'),
+                    T('s3_t7', 'algo', 'fa-satellite-dish', 'رمزگشایی سیگنال‌های رادیویی ارسال‌شده از زمین', 'پیدا کردن قاعده سیگنال‌ها و نوشتن برنامه‌ای که پیام‌ها را درست باز کند.'),
+                    T('s3_t8', 'web', 'fa-school', 'ساخت وب‌سایت آموزشی برای نوجوانان زمین', 'طراحی سایتی که ماموریت‌ها را جذاب برای کودکان و نوجوانان توضیح بدهد.'),
+                    T('s3_t9', 'ai', 'fa-wind', 'پیش‌بینی طوفان‌های گرد و غبار با داده آب‌وهوا', 'ساخت مدلی که قبل از رسیدن طوفان، به پایگاه هشدار بدهد.'),
+                    T('s3_t10', 'maker', 'fa-vr-cardboard', 'طراحی بازی شبیه‌ساز برای تمرین فضانوردان', 'ساخت یک بازی واقعیت مجازی که فضانوردان تازه‌وارد در آن تمرین کنند.')
+                ],
+                questions: [
+                    Q('s3', 1, 'مرحله ۱ از ۴: فرود روی سیاره سرخ', 'فرودگر نزدیک سطح مریخ است و ثانیه‌ها می‌گذرند. چه می‌کنی؟', {
+                        ai: ['تصاویر ارسالی را تحلیل می‌کنم تا نقاط امن فرود را تشخیص بدهم.'],
+                        algo: ['زاویه و سوخت لازم برای فرود دقیق را محاسبه می‌کنم.'],
+                        web: ['صفحه پایشی آماده می‌کنم که وضعیت فرود را برای همه تیم نشان بدهد.'],
+                        maker: ['قطعات فرودگر را بازبینی و تست عملی می‌کنم.'] }),
+                    Q('s3', 2, 'مرحله ۲ از ۴: قطع ارتباط با زمین', 'ارتباط با زمین ناگهان قطع شده است. اولویتت چیست؟', {
+                        algo: ['الگوی سیگنال را رمزگشایی می‌کنم و ترتیب درست فرمان‌ها را پیدا می‌کنم.'],
+                        ai: ['مدلی می‌سازم که نویز سیگنال را حذف کند و پیام را واضح‌تر کند.'],
+                        web: ['سامانه پیام‌رسانی ساده‌ای می‌سازم که با برگشتن ارتباط، پیام‌ها خودکار ارسال شوند.'],
+                        maker: ['آنتن و مدار گیرنده را با ابزار دستی تنظیم می‌کنم.'] }),
+                    Q('s3', 3, 'مرحله ۳ از ۴: خرابی سیستم اکسیژن', 'سیستم اکسیژن پایگاه خطا می‌دهد. چه می‌کنی؟', {
+                        maker: ['دستگاه را باز می‌کنم و سنسور معیوب را عوض و دوباره برنامه‌ریزی می‌کنم.'],
+                        ai: ['داده‌های سنسورها را تحلیل می‌کنم تا علت اصلی خرابی را پیدا کنم.'],
+                        algo: ['منطق کنترلی جدیدی می‌نویسم تا اکسیژن به شکل بهینه بین بخش‌ها تقسیم شود.'],
+                        web: ['هشدار روشنی روی پنل پایگاه می‌سازم تا همه تیم دقیقاً بدانند چه باید بکنند.'] }),
+                    Q('s3', 4, 'مرحله ۴ از ۴: بازگشت قهرمانان', 'ماموریت مریخ با موفقیت تمام شد! دوست داری چه کسی در یادها بمانی؟', {
+                        ai: ['کسی که با هوش مصنوعی خطرها را پیش از وقوع دید.'],
+                        algo: ['کسی که سخت‌ترین معماها و رمزها را حل کرد.'],
+                        web: ['کسی که ماموریت را برای میلیون‌ها نفر روی زمین قابل فهم و جذاب کرد.'],
+                        maker: ['کسی که ربات‌ها و دستگاه‌های پایگاه را ساخت و زنده نگه داشت.'] })
+                ]
+            }
+        };
+
+        // =================================~~~~~~~~~~~~~~~~~~~~~~~~
+        let studentProfile = {
+            firstName: 'صبا',
+            lastName: 'رادمنش',
+            studentCode: '۹۸۴۵۱۲۳۰۱',
+            schoolName: 'آموزشگاه توکاپیشرو',
+            gpa: '۱۹.۷۵',
+            avatarId: 0
+        };
+
+        let activeScenarioId = 'scenario_1';
+        let currentStep = 1;
+
+        // Current Scenario Working State
+        let shuffledTasks = [];
+        let rankedTaskIds = [];
+        let currentTreeIndex = 0; // 0 to 3 (4 hierarchical steps)
+        let shuffledTreeOptions = {};
+        let treeSelections = { 0: [], 1: [], 2: [], 3: [] };
+
+        // Completed Scenarios History for Current Student
+        // { scenario_1: { scenarioTitle, firstStreamKey, secondStreamKey, firstJob, secondJob, scores, timestamp } }
+        let completedScenariosHistory = {};
+
+        // =================================~~~~~~~~~~~~~~~~~~~~~~~~
+        // 5. HELPER UTILITIES
+        // =================================~~~~~~~~~~~~~~~~~~~~~~~~
+        function fisherYatesShuffle(arr) {
+            const copy = [...arr];
+            for (let i = copy.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [copy[i], copy[j]] = [copy[j], copy[i]];
+            }
+            return copy;
+        }
+
+        function toPersianDigits(num) {
+            const persian = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
+            return String(num).replace(/\d/g, d => persian[d]);
+        }
+
+        let toastTimer = null;
+        function showToast(message, iconClass = 'fa-circle-info text-indigo-400') {
+            const box = document.getElementById('toast-box');
+            const text = document.getElementById('toast-text');
+            const icon = document.getElementById('toast-icon');
+            text.textContent = message;
+            icon.className = `fa-solid ${iconClass} text-lg`;
+            box.classList.remove('hidden');
+            if (toastTimer) clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => {
+                box.classList.add('hidden');
+            }, 3400);
+        }
+
+        // =================================~~~~~~~~~~~~~~~~~~~~~~~~
+        // 6. STEP 1: LOGIN & SCENARIO PICKER UI
+        // =================================~~~~~~~~~~~~~~~~~~~~~~~~
+        function renderLoginAvatars() {
+            const grid = document.getElementById('avatar-selector-grid');
+            grid.innerHTML = AVATARS.map(av => {
+                const isSelected = studentProfile.avatarId === av.id;
+                return `
+                    <button
+                        type="button"
+                        onclick="selectAvatar(${av.id})"
+                        class="p-2.5 rounded-2xl border border-white/10 bg-slate-900/70 flex flex-col items-center gap-1.5 transition ${isSelected ? 'avatar-selected' : 'hover:bg-slate-800'}"
+                    >
+                        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr ${av.color} flex items-center justify-center text-white text-lg shadow-md">
+                            <i class="fa-solid ${av.icon}"></i>
+                        </div>
+                        <span class="text-[10px] font-bold text-slate-300 truncate max-w-full">${av.label}</span>
+                    </button>
+                `;
+            }).join('');
+        }
+
+        function selectAvatar(id) {
+            studentProfile.avatarId = id;
+            renderLoginAvatars();
+        }
+
+        function fillSampleStudent(first, last, code, school, gpa, avatarId) {
+            document.getElementById('login-first-name').value = first;
+            document.getElementById('login-last-name').value = last;
+            document.getElementById('login-student-code').value = code;
+            document.getElementById('login-school').value = school;
+            document.getElementById('login-gpa').value = gpa;
+            studentProfile.avatarId = avatarId;
+            renderLoginAvatars();
+            showToast(`مشخصات نمونه «${first} ${last}» جایگذاری شد.`, 'fa-user-check text-emerald-400');
+        }
+
+        function renderLoginScenarioCards() {
+            const container = document.getElementById('login-scenarios-list');
+            const scenarioKeys = ['scenario_1', 'scenario_2', 'scenario_3'];
+
+            container.innerHTML = scenarioKeys.map((key, idx) => {
+                const sc = SCENARIOS_BANK[key];
+                const isSelected = activeScenarioId === key;
+                const isDone = Boolean(completedScenariosHistory[key]);
+
+                return `
+                    <div
+                        onclick="selectScenarioOnLogin('${key}')"
+                        class="cursor-pointer rounded-2xl p-4 border border-white/10 bg-slate-900/70 transition flex items-start gap-3.5 ${isSelected ? 'scenario-card-selected' : 'hover:bg-slate-800/80'}"
+                    >
+                        <div class="w-11 h-11 rounded-2xl bg-indigo-500/20 border border-indigo-400/30 text-indigo-300 flex items-center justify-center text-lg shrink-0 mt-0.5">
+                            <i class="fa-solid ${sc.icon}"></i>
+                        </div>
+                        <div class="flex-1 space-y-1">
+                            <div class="flex items-center justify-between gap-2">
+                                <span class="font-extrabold text-sm text-white">${sc.shortTitle}</span>
+                                ${
+                                    isDone
+                                        ? `<span class="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/40"><i class="fa-solid fa-check ml-1"></i>انجام شده</span>`
+                                        : isSelected
+                                        ? `<span class="text-[10px] font-extrabold px-2.5 py-0.5 rounded-full bg-indigo-500 text-white">انتخاب فعال</span>`
+                                        : `<span class="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-slate-800 text-slate-400">سناریوی ${toPersianDigits(idx + 1)}</span>`
+                                }
+                            </div>
+                            <p class="text-xs text-slate-300 leading-relaxed">${sc.subtitle}</p>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            const activeSc = SCENARIOS_BANK[activeScenarioId];
+            document.getElementById('btn-start-scenario-text').textContent = `ورود و شروع ${activeSc.shortTitle}`;
+        }
+
+        function selectScenarioOnLogin(scenarioKey) {
+            activeScenarioId = scenarioKey;
+            renderLoginScenarioCards();
+        }
+
+        function selectNextUnplayedScenario() {
+            const order = ['scenario_1', 'scenario_2', 'scenario_3'];
+            const nextKey = order.find(k => !completedScenariosHistory[k]) || 'scenario_2';
+            activeScenarioId = nextKey;
+            renderLoginScenarioCards();
+            showToast(`${SCENARIOS_BANK[nextKey].shortTitle} به صورت هوشمند انتخاب شد!`, 'fa-wand-magic-sparkles text-emerald-400');
+        }
+
+        function handleLoginAndStartScenario() {
+            const first = (document.getElementById('login-first-name').value || '').trim();
+            const last = (document.getElementById('login-last-name').value || '').trim();
+            const code = (document.getElementById('login-student-code').value || '').trim() || '—';
+            const school = (document.getElementById('login-school').value || '').trim() || 'آموزشگاه توکاپیشرو';
+            const gpa = (document.getElementById('login-gpa').value || '').trim() || '—';
+
+            if (!first) {
+                showToast('لطفاً نام هنرجو را وارد کن (مثلاً: صبا).', 'fa-triangle-exclamation text-amber-400');
+                document.getElementById('login-first-name').focus();
+                return;
+            }
+
+            studentProfile.firstName = first;
+            studentProfile.lastName = last || '';
+            studentProfile.studentCode = code;
+            studentProfile.schoolName = school;
+            studentProfile.gpa = gpa;
+
+            updateHeaderProfileUI();
+            initializeActiveScenarioState();
+            goToStep(2);
+            showToast(`${studentProfile.firstName} عزیز خوش آمدی! ${SCENARIOS_BANK[activeScenarioId].shortTitle} آغاز شد.`, 'fa-rocket text-emerald-400');
+        }
+
+        function updateHeaderProfileUI() {
+            const profileBar = document.getElementById('header-user-profile');
+            profileBar.classList.remove('hidden');
+            profileBar.classList.add('flex');
+
+            const av = AVATARS.find(a => a.id === studentProfile.avatarId) || AVATARS[0];
+            const avatarBox = document.getElementById('header-avatar-box');
+            avatarBox.className = `w-8 h-8 rounded-xl bg-gradient-to-tr ${av.color} text-white flex items-center justify-center text-sm shadow`;
+            avatarBox.innerHTML = `<i class="fa-solid ${av.icon}"></i>`;
+
+            const fullName = `${studentProfile.firstName} ${studentProfile.lastName}`.trim();
+            document.getElementById('header-user-name').textContent = fullName;
+            document.getElementById('header-user-school').textContent = `${studentProfile.schoolName} • پایه/سن: ${studentProfile.gpa}`;
+
+            const completedCount = Object.keys(completedScenariosHistory).length;
+            document.getElementById('header-completed-badge').textContent = `${toPersianDigits(completedCount)} از ۳ سناریو`;
+        }
+
+        function logoutAndEditProfile() {
+            goToStep(1);
+            renderLoginScenarioCards();
+            showToast('می‌توانی مشخصات هنرجو یا سناریوی آزمون را تغییر دهی.', 'fa-user-pen text-indigo-400');
+        }
+
+        // =================================~~~~~~~~~~~~~~~~~~~~~~~~
+        // 7. INITIALIZE & SHUFFLE ACTIVE SCENARIO DATA
+        // =================================~~~~~~~~~~~~~~~~~~~~~~~~
+        function initializeActiveScenarioState() {
+            const sc = SCENARIOS_BANK[activeScenarioId];
+            shuffledTasks = fisherYatesShuffle(sc.tasks);
+            rankedTaskIds = [];
+            currentTreeIndex = 0;
+            shuffledTreeOptions = {};
+            treeSelections = { 0: [], 1: [], 2: [], 3: [] };
+
+            sc.questions.forEach((q, idx) => {
+                shuffledTreeOptions[idx] = fisherYatesShuffle(q.options);
+            });
+
+            document.getElementById('header-scenario-subtitle').textContent =
+                `سناریوی فعال: ${sc.shortTitle} (${sc.subtitle})`;
+        }
+
+        // =================================~~~~~~~~~~~~~~~~~~~~~~~~
+        // 8. STEP NAVIGATION
+        // =================================~~~~~~~~~~~~~~~~~~~~~~~~
+        function goToStep(stepNum) {
+            currentStep = stepNum;
+            for (let i = 1; i <= 4; i++) {
+                const sec = document.getElementById(`step-${i}`);
+                const ind = document.getElementById(`step-ind-${i}`);
+                if (i === stepNum) {
+                    sec.classList.remove('hidden');
+                    ind.className = 'flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-indigo-600 text-white shadow-lg shadow-indigo-600/30 transition-all';
+                } else {
+                    sec.classList.add('hidden');
+                    if (i < stepNum) {
+                        ind.className = 'flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 transition-all';
+                    } else {
+                        ind.className = 'flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-slate-800 text-slate-400 transition-all';
+                    }
+                }
+            }
+
+            if (stepNum === 1) {
+                renderLoginAvatars();
+                renderLoginScenarioCards();
+            } else if (stepNum === 2) {
+                renderStep2Tasks();
+            } else if (stepNum === 3) {
+                renderTreeStep();
+            } else if (stepNum === 4) {
+                calculateAndRenderFinalResults();
+            }
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // =================================~~~~~~~~~~~~~~~~~~~~~~~~
+        // 9. STEP 2 LOGIC: RANKING 1 TO 10 TASKS
+        // =================================~~~~~~~~~~~~~~~~~~~~~~~~
+        function renderStep2Tasks() {
+            const sc = SCENARIOS_BANK[activeScenarioId];
+
+            // Update Scenario Title & Description
+            const badgeEl = document.getElementById('step2-scenario-badge');
+            badgeEl.className = `inline-flex items-center gap-2 px-3.5 py-1 rounded-full border text-xs font-extrabold ${sc.themeBadge}`;
+            badgeEl.innerHTML = `<i class="fa-solid ${sc.icon}"></i> ${sc.shortTitle}`;
+
+            document.getElementById('step2-scenario-title').textContent =
+                `${studentProfile.firstName} عزیز، برای اجرای «${sc.codeName}» از کار ۱ تا ۱۰ کدام را اول و کدام را بعد انجام می‌دهی؟`;
+            document.getElementById('step2-scenario-desc').textContent = sc.description;
+
+            // Update Counter Badge
+            const count = rankedTaskIds.length;
+            const counterBadge = document.getElementById('rank-counter-badge');
+            counterBadge.textContent = `${toPersianDigits(count)} از ۱۰ کار اولویت‌بندی شده`;
+            counterBadge.className = count === 10
+                ? 'font-extrabold text-emerald-300 bg-emerald-500/20 px-3 py-1 rounded-lg border border-emerald-500/40'
+                : 'font-extrabold text-indigo-300 bg-indigo-500/15 px-3 py-1 rounded-lg border border-indigo-500/30';
+
+            // Render 10-slot Priority Bar
+            const slotsBar = document.getElementById('priority-slots-bar');
+            let slotsHtml = '';
+            for (let i = 0; i < 10; i++) {
+                const taskId = rankedTaskIds[i];
+                const rankLabel = toPersianDigits(i + 1);
+                if (taskId) {
+                    const taskObj = sc.tasks.find(t => t.id === taskId);
+                    slotsHtml += `
+                        <button type="button" onclick="toggleTaskRank('${taskId}')" title="حذف اولویت ${rankLabel}: ${taskObj.title}"
+                            class="p-2 rounded-xl bg-gradient-to-b from-indigo-600/40 to-purple-600/30 border border-indigo-400/50 text-center flex flex-col items-center justify-center gap-1 hover:border-rose-400 transition group">
+                            <span class="text-[11px] font-black text-indigo-200 group-hover:text-rose-300">اولویت ${rankLabel}</span>
+                            <i class="fa-solid ${taskObj.icon} text-white text-xs"></i>
+                        </button>
+                    `;
+                } else {
+                    slotsHtml += `
+                        <div class="p-2 rounded-xl bg-slate-800/60 border border-dashed border-slate-700 text-center flex flex-col items-center justify-center gap-1 opacity-60">
+                            <span class="text-[11px] font-bold text-slate-400">اولویت ${rankLabel}</span>
+                            <span class="text-[10px] text-slate-500">خالی</span>
+                        </div>
+                    `;
+                }
+            }
+            slotsBar.innerHTML = slotsHtml;
+
+            // Render 10 Shuffled Cards
+            const grid = document.getElementById('tasks-grid');
+            grid.innerHTML = shuffledTasks.map(task => {
+                const rankIndex = rankedTaskIds.indexOf(task.id);
+                const isSelected = rankIndex !== -1;
+                const rankNum = rankIndex + 1;
+
+                return `
+                    <div onclick="toggleTaskRank('${task.id}')"
+                        class="cursor-pointer rounded-2xl p-5 glass-card-light relative flex items-start gap-4 select-none ${isSelected ? 'task-selected' : ''}">
+                        
+                        <div class="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 transition-all ${
+                            isSelected
+                                ? 'bg-gradient-to-tr from-indigo-600 to-purple-500 text-white font-black text-lg shadow-lg shadow-indigo-500/40 rank-badge'
+                                : 'bg-slate-800/90 border border-white/10 text-slate-300'
+                        }">
+                            ${isSelected ? toPersianDigits(rankNum) : `<i class="fa-solid ${task.icon} text-lg"></i>`}
+                        </div>
+
+                        <div class="flex-1 space-y-1.5">
+                            <div class="flex items-center justify-between gap-2">
+                                <h3 class="font-extrabold text-sm sm:text-base text-white leading-snug">
+                                    ${task.title}
+                                </h3>
+                                ${
+                                    isSelected
+                                        ? `<span class="shrink-0 text-[11px] font-black px-2.5 py-0.5 rounded-full bg-indigo-500 text-white">کار ${toPersianDigits(rankNum)}</span>`
+                                        : `<span class="shrink-0 text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-slate-800 text-slate-400">انتخاب نشده</span>`
+                                }
+                            </div>
+                            <p class="text-xs text-slate-300 leading-relaxed">
+                                ${task.desc}
+                            </p>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function toggleTaskRank(taskId) {
+            const existingIndex = rankedTaskIds.indexOf(taskId);
+            if (existingIndex !== -1) {
+                rankedTaskIds.splice(existingIndex, 1);
+            } else if (rankedTaskIds.length < 10) {
+                rankedTaskIds.push(taskId);
+            }
+            renderStep2Tasks();
+        }
+
+        function shuffleTasksOrder() {
+            shuffledTasks = fisherYatesShuffle(shuffledTasks);
+            renderStep2Tasks();
+            showToast('جای کارت‌های این سناریو به صورت تصادفی بُر خورد!', 'fa-shuffle text-indigo-400');
+        }
+
+        function autoFillRandomRanks() {
+            const sc = SCENARIOS_BANK[activeScenarioId];
+            rankedTaskIds = fisherYatesShuffle(sc.tasks).map(t => t.id);
+            renderStep2Tasks();
+            showToast('هر ۱۰ فعالیت این سناریو به صورت تصادفی از ۱ تا ۱۰ رتبه‌بندی شدند.', 'fa-wand-magic-sparkles text-emerald-400');
+        }
+
+        function resetAllRanks() {
+            rankedTaskIds = [];
+            renderStep2Tasks();
+            showToast('رتبه‌بندی‌ها پاک شد؛ دوباره از ۱ تا ۱۰ انتخاب کن.', 'fa-rotate-right text-rose-400');
+        }
+
+        function proceedToStep3() {
+            if (rankedTaskIds.length < 10) {
+                const rem = 10 - rankedTaskIds.length;
+                showToast(`لطفاً هر ۱۰ کار را اولویت‌بندی کن (${toPersianDigits(rem)} کار باقی مانده یا دکمه «چیدمان تصادفی سریع» را بزن).`, 'fa-triangle-exclamation text-amber-400');
+                return;
+            }
+            currentTreeIndex = 0;
+            goToStep(3);
+        }
+
+        // =================================~~~~~~~~~~~~~~~~~~~~~~~~
+        // 10. STEP 3 LOGIC: 4 HIERARCHICAL INDIRECT STEPS
+        // =================================~~~~~~~~~~~~~~~~~~~~~~~~
+        function renderTreeStep() {
+            const sc = SCENARIOS_BANK[activeScenarioId];
+            const qObj = sc.questions[currentTreeIndex];
+            const options = shuffledTreeOptions[currentTreeIndex];
+            const selectedIds = treeSelections[currentTreeIndex] || [];
+
+            document.getElementById('tree-scenario-tag').innerHTML = `<i class="fa-solid ${sc.icon} ml-1"></i>${sc.shortTitle}`;
+            document.getElementById('tree-step-badge').textContent =
+                `مرحله ${toPersianDigits(currentTreeIndex + 1)} از ۴ در مسیر سلسله‌مراتبی`;
+            document.getElementById('tree-question-title').textContent = qObj.title;
+
+            // Breadcrumb
+            const breadcrumbEl = document.getElementById('tree-breadcrumb');
+            breadcrumbEl.innerHTML = sc.questions.map((item, idx) => {
+                const done = (treeSelections[idx] && treeSelections[idx].length === 2);
+                const active = idx === currentTreeIndex;
+                return `
+                    <button type="button" onclick="jumpToTreeQuestion(${idx})"
+                        class="px-3.5 py-1.5 rounded-xl font-bold transition flex items-center gap-1.5 ${
+                            active
+                                ? 'bg-indigo-600 text-white shadow-md'
+                                : done
+                                ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
+                                : 'bg-slate-800 text-slate-400'
+                        }">
+                        <span>پله ${toPersianDigits(idx + 1)}</span>
+                        ${done ? '<i class="fa-solid fa-check text-[10px]"></i>' : ''}
+                    </button>
+                `;
+            }).join('');
+
+            // Story Bridge based on previous step
+            const bridgeTextEl = document.getElementById('tree-story-bridge-text');
+            if (currentTreeIndex === 0) {
+                const firstTask = sc.tasks.find(t => t.id === rankedTaskIds[0]);
+                bridgeTextEl.innerHTML = firstTask
+                    ? `${studentProfile.firstName} عزیز، چون در مرحله قبل <strong>«${firstTask.title}»</strong> را به عنوان <strong>کار شماره ۱</strong> انتخاب کردی، سرپرستی تیم در این موقعیت به تو سپرده شده است. ${qObj.defaultBridge}`
+                    : qObj.defaultBridge;
+            } else {
+                const prevSelectedId = (treeSelections[currentTreeIndex - 1] || [])[0];
+                const prevQ = sc.questions[currentTreeIndex - 1];
+                const prevOpt = prevQ.options.find(o => o.id === prevSelectedId);
+                bridgeTextEl.innerHTML = prevOpt && prevOpt.nextBridgeText
+                    ? `<strong>نتیجه تصمیم قبلی تو:</strong> ${prevOpt.nextBridgeText}`
+                    : qObj.defaultBridge;
+            }
+
+            // Status counter
+            const statusEl = document.getElementById('tree-selection-status');
+            statusEl.textContent = `${toPersianDigits(selectedIds.length)} از ۲ اولویت انتخاب شده`;
+            statusEl.className = selectedIds.length === 2
+                ? 'text-xs font-extrabold px-3 py-1.5 rounded-lg bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 shrink-0'
+                : 'text-xs font-bold px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300 shrink-0';
+
+            // Options Grid
+            const optionsGrid = document.getElementById('tree-options-grid');
+            optionsGrid.innerHTML = options.map((opt, idx) => {
+                const pIdx = selectedIds.indexOf(opt.id);
+                const isFirst = pIdx === 0;
+                const isSecond = pIdx === 1;
+
+                let cardStyle = 'glass-card-light';
+                let badgeHtml = `<span class="text-[11px] font-semibold px-2.5 py-1 rounded-lg bg-slate-800 text-slate-400">کلیک برای انتخاب</span>`;
+
+                if (isFirst) {
+                    cardStyle = 'bg-emerald-950/50 border-2 border-emerald-400 shadow-lg shadow-emerald-500/15';
+                    badgeHtml = `<span class="text-[11px] font-black px-3 py-1 rounded-lg bg-emerald-500 text-slate-950 rank-badge">اولویت ۱ (مسیر اصلی)</span>`;
+                } else if (isSecond) {
+                    cardStyle = 'bg-amber-950/40 border-2 border-amber-400/80 shadow-lg shadow-amber-500/10';
+                    badgeHtml = `<span class="text-[11px] font-black px-3 py-1 rounded-lg bg-amber-400 text-slate-950 rank-badge">اولویت ۲ (مسیر دوم)</span>`;
+                }
+
+                return `
+                    <div onclick="toggleTreeOption('${opt.id}')"
+                        class="cursor-pointer rounded-2xl p-5 transition-all select-none flex flex-col justify-between gap-4 ${cardStyle}">
+                        <div class="flex items-center justify-between gap-2">
+                            <span class="w-8 h-8 rounded-xl bg-white/10 text-white font-bold text-xs flex items-center justify-center">
+                                مسیر ${toPersianDigits(idx + 1)}
+                            </span>
+                            ${badgeHtml}
+                        </div>
+                        <p class="text-sm sm:text-base font-bold text-white leading-relaxed">
+                            ${opt.text}
+                        </p>
+                    </div>
+                `;
+            }).join('');
+
+            document.getElementById('btn-tree-prev-label').textContent =
+                currentTreeIndex === 0 ? 'بازگشت به اولویت‌بندی ۱ تا ۱۰' : 'مرحله قبلی';
+            document.getElementById('btn-tree-next-label').textContent =
+                currentTreeIndex === sc.questions.length - 1
+                    ? 'صدور کارنامه و رمزگشایی مسیر برنامه‌نویسی و هوش مصنوعی!'
+                    : 'ثبت و رفتن به مرحله بعدی';
+        }
+
+        function toggleTreeOption(optionId) {
+            const arr = treeSelections[currentTreeIndex] || [];
+            const idx = arr.indexOf(optionId);
+            if (idx !== -1) {
+                arr.splice(idx, 1);
+            } else {
+                if (arr.length < 2) {
+                    arr.push(optionId);
+                } else {
+                    arr[1] = optionId;
+                }
+            }
+            treeSelections[currentTreeIndex] = arr;
+            renderTreeStep();
+        }
+
+        function jumpToTreeQuestion(idx) {
+            currentTreeIndex = idx;
+            renderTreeStep();
+        }
+
+        function prevTreeQuestion() {
+            if (currentTreeIndex > 0) {
+                currentTreeIndex--;
+                renderTreeStep();
+            } else {
+                goToStep(2);
+            }
+        }
+
+        function nextTreeQuestion() {
+            const sc = SCENARIOS_BANK[activeScenarioId];
+            const arr = treeSelections[currentTreeIndex] || [];
+            if (arr.length < 2) {
+                showToast('لطفاً در این موقعیت «اولویت ۱» و «اولویت ۲» خودت را با دو بار کلیک انتخاب کن.', 'fa-hand-pointer text-amber-400');
+                return;
+            }
+            if (currentTreeIndex < sc.questions.length - 1) {
+                currentTreeIndex++;
+                renderTreeStep();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } else {
+                goToStep(4);
+            }
+        }
+
+        function autoFillTreeAnswers() {
+            const sc = SCENARIOS_BANK[activeScenarioId];
+            sc.questions.forEach((q, idx) => {
+                const sh = fisherYatesShuffle(q.options);
+                treeSelections[idx] = [sh[0].id, sh[1].id];
+            });
+            renderTreeStep();
+            showToast('تمام ۴ مرحله سلسله‌مراتبی تکمیل شدند! اکنون دکمه صدور کارنامه را بزن.', 'fa-bolt text-emerald-400');
+        }
+
+        // =================================~~~~~~~~~~~~~~~~~~~~~~~~
+        // 11. STEP 4: SCORING, REPORT CARD & MULTI-SCENARIO ENGINE
+        // =================================~~~~~~~~~~~~~~~~~~~~~~~~
+        function calculateAndRenderFinalResults() {
+            const sc = SCENARIOS_BANK[activeScenarioId];
+            const firstName = studentProfile.firstName;
+            const fullName = `${studentProfile.firstName} ${studentProfile.lastName}`.trim();
+
+            // Fallback if user jumped
+            if (rankedTaskIds.length < 10) {
+                rankedTaskIds = sc.tasks.map(t => t.id);
+            }
+
+            // 1. Update Student Info Header in Report
+            const av = AVATARS.find(a => a.id === studentProfile.avatarId) || AVATARS[0];
+            const reportAvBox = document.getElementById('report-avatar-box');
+            reportAvBox.className = `w-16 h-16 rounded-2xl bg-gradient-to-tr ${av.color} flex items-center justify-center text-3xl text-white shadow-xl shrink-0`;
+            reportAvBox.innerHTML = `<i class="fa-solid ${av.icon}"></i>`;
+
+            document.getElementById('report-full-name').textContent = fullName;
+            document.getElementById('report-scenario-badge').textContent = sc.shortTitle;
+            document.getElementById('report-school').innerHTML = `<i class="fa-solid fa-school text-indigo-400 ml-1"></i>${studentProfile.schoolName}`;
+            document.getElementById('report-student-code').innerHTML = `<i class="fa-solid fa-id-badge text-indigo-400 ml-1"></i>کد هنرجویی: ${studentProfile.studentCode}`;
+            document.getElementById('report-gpa').innerHTML = `<i class="fa-solid fa-star text-amber-400 ml-1"></i>پایه/سن: ${studentProfile.gpa}`;
+
+            // 2. Calculate Normalized Scores from Step 2 (1..10 Ranking)
+            const taskPointsSum = { ai: 0, algo: 0, web: 0, maker: 0 };
+            const taskCounts = { ai: 0, algo: 0, web: 0, maker: 0 };
+            const topJobByStream = {
+                ai: STREAMS_DATA.ai.defaultTopJob,
+                algo: STREAMS_DATA.algo.defaultTopJob,
+                web: STREAMS_DATA.web.defaultTopJob,
+                maker: STREAMS_DATA.maker.defaultTopJob
+            };
+            const bestRankForStream = { ai: 99, algo: 99, web: 99, maker: 99 };
+
+            rankedTaskIds.forEach((taskId, idx) => {
+                const taskObj = sc.tasks.find(t => t.id === taskId);
+                if (!taskObj) return;
+                const rank = idx + 1;
+                const pts = 11 - rank; // 10 down to 1
+                taskPointsSum[taskObj.stream] += pts;
+                taskCounts[taskObj.stream] += 1;
+
+                if (rank < bestRankForStream[taskObj.stream]) {
+                    bestRankForStream[taskObj.stream] = rank;
+                    topJobByStream[taskObj.stream] = taskObj.specificJob;
+                }
+            });
+
+            const phase1Normalized = {};
+            Object.keys(STREAMS_DATA).forEach(st => {
+                const avg = taskPointsSum[st] / (taskCounts[st] || 1);
+                phase1Normalized[st] = (avg / 10) * 52;
+            });
+
+            // 3. Calculate Scores from Step 3 (4 Hierarchical Questions)
+            const phase2Raw = { ai: 0, algo: 0, web: 0, maker: 0 };
+            sc.questions.forEach((q, qIdx) => {
+                const picks = treeSelections[qIdx] || [];
+                picks.forEach((optId, pIdx) => {
+                    const optObj = q.options.find(o => o.id === optId);
+                    if (!optObj) return;
+                    const pts = pIdx === 0 ? 12 : 6;
+                    phase2Raw[optObj.stream] += pts;
+                    if (qIdx === sc.questions.length - 1 && pIdx === 0) {
+                        topJobByStream[optObj.stream] = optObj.jobHint;
+                    }
+                });
+            });
+
+            const totalStreamScores = {};
+            Object.keys(STREAMS_DATA).forEach(st => {
+                totalStreamScores[st] = Math.round(phase1Normalized[st] + phase2Raw[st]);
+            });
+
+            const sortedStreams = Object.keys(STREAMS_DATA).sort((a, b) => totalStreamScores[b] - totalStreamScores[a]);
+            const firstStreamKey = sortedStreams[0];
+            const secondStreamKey = sortedStreams[1];
+            const firstStream = STREAMS_DATA[firstStreamKey];
+            const secondStream = STREAMS_DATA[secondStreamKey];
+            const firstJob = topJobByStream[firstStreamKey];
+            const secondJob = topJobByStream[secondStreamKey];
+
+            // Save to student's Scenario History
+            completedScenariosHistory[activeScenarioId] = {
+                scenarioId: activeScenarioId,
+                scenarioShortTitle: sc.shortTitle,
+                firstStreamTitle: firstStream.title,
+                secondStreamTitle: secondStream.title,
+                firstStreamBadge: firstStream.badgeColor,
+                firstJob: firstJob,
+                secondJob: secondJob,
+                personality1: firstStream.personalityType
+            };
+            updateHeaderProfileUI();
+
+            // 4. Render Exact Requested Sentences
+            document.getElementById('exact-sentence-100').innerHTML = `
+                «<span class="text-emerald-300 underline decoration-emerald-400/60 underline-offset-8">${firstName}</span> تو براساس این تیپ شخصیتی (<span class="text-emerald-300">${firstStream.personalityType}</span>) <span class="text-emerald-400 font-black">۱۰۰ درصد</span> با این شغل (<span class="text-white bg-emerald-500/25 px-2.5 py-0.5 rounded-lg border border-emerald-400/40">${firstJob}</span>) مطابقت داری»
+            `;
+            document.getElementById('exact-sub-100').innerHTML = `
+                <i class="fa-solid fa-graduation-cap ml-1"></i>
+                مسیر پیشنهادی اول برای شروع یادگیری: <strong>${firstStream.title}</strong>
+            `;
+
+            document.getElementById('exact-sentence-80').innerHTML = `
+                «براساس تیپ شخصیتی ۲ (<span class="text-indigo-300">${secondStream.personalityType}</span>) شما <span class="text-indigo-300 font-black">۸۰ درصد</span> با این شغل (<span class="text-white bg-indigo-500/25 px-2.5 py-0.5 rounded-lg border border-indigo-400/40">${secondJob}</span>) مطابقت داری»
+            `;
+            document.getElementById('exact-sub-80').innerHTML = `
+                <i class="fa-solid fa-layer-group ml-1"></i>
+                مسیر پیشنهادی دوم (مسیر جایگزین): <strong>${secondStream.title}</strong>
+            `;
+
+            // 5. Render Top 2 Streams Cards
+            document.getElementById('top-streams-cards').innerHTML = [
+                { stream: firstStream, matchPct: '۱۰۰٪', rankTitle: 'پیشنهاد اول توکاپیشرو', border: 'border-emerald-500/40' },
+                { stream: secondStream, matchPct: '۸۰٪', rankTitle: 'پیشنهاد دوم توکاپیشرو', border: 'border-indigo-500/40' }
+            ].map(item => `
+                <div class="bg-slate-900/85 border ${item.border} rounded-3xl p-6 space-y-4 flex flex-col justify-between">
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between gap-2">
+                            <span class="text-xs font-extrabold px-3 py-1 rounded-full border ${item.stream.badgeColor}">
+                                ${item.rankTitle} • تطابق ${item.matchPct}
+                            </span>
+                            <i class="fa-solid ${item.stream.icon} text-2xl text-slate-300"></i>
+                        </div>
+                        <h3 class="text-xl sm:text-2xl font-black text-white">${item.stream.title}</h3>
+                        <p class="text-xs text-slate-300 leading-relaxed">${item.stream.whyDescription}</p>
+                    </div>
+                    <div class="space-y-2 pt-3 border-t border-white/10">
+                        <div class="text-xs font-bold text-slate-200">مشاغل کلیدی مرتبط با این مسیر:</div>
+                        <div class="flex flex-wrap gap-1.5">
+                            ${item.stream.careers.map(c => `
+                                <span class="text-[11px] font-semibold px-2.5 py-1 rounded-lg bg-white/5 border border-white/10 text-slate-200">${c}</span>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+            // 6. Render 4 Streams Percentage Chart
+            const maxScore = Math.max(...Object.values(totalStreamScores), 1);
+            const displayPct = {};
+            sortedStreams.forEach((st, idx) => {
+                if (idx === 0) displayPct[st] = 100;
+                else if (idx === 1) displayPct[st] = 80;
+                else displayPct[st] = Math.max(28, Math.min(72, Math.round((totalStreamScores[st] / maxScore) * 74)));
+            });
+
+            document.getElementById('four-streams-bars').innerHTML = sortedStreams.map((stKey, idx) => {
+                const st = STREAMS_DATA[stKey];
+                const pct = displayPct[stKey];
+                return `
+                    <div class="space-y-1.5">
+                        <div class="flex items-center justify-between text-xs sm:text-sm">
+                            <span class="font-extrabold text-white flex items-center gap-2">
+                                <span class="w-6 h-6 rounded-lg bg-white/10 flex items-center justify-center text-xs">${toPersianDigits(idx + 1)}</span>
+                                ${st.title}
+                            </span>
+                            <span class="font-black text-indigo-300">${toPersianDigits(pct)}٪ تطابق</span>
+                        </div>
+                        <div class="w-full h-3.5 bg-slate-800 rounded-full overflow-hidden p-0.5">
+                            <div class="h-full rounded-full bg-gradient-to-l ${st.barColor} transition-all duration-700" style="width: ${pct}%"></div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            // 7. Render Declassified Choices for Current Scenario
+            const top4Tasks = rankedTaskIds.slice(0, 4).map((id, idx) => {
+                const t = sc.tasks.find(x => x.id === id);
+                const st = STREAMS_DATA[t.stream];
+                return `
+                    <div class="bg-slate-800/75 border border-white/10 rounded-2xl p-4 space-y-2">
+                        <div class="flex items-center justify-between gap-2">
+                            <span class="text-xs font-black text-amber-300">
+                                اولویت ${toPersianDigits(idx + 1)} تو در ${sc.codeName}
+                            </span>
+                            <span class="text-[11px] font-extrabold px-2.5 py-0.5 rounded-lg border ${st.badgeColor}">
+                                رمزگشایی: ${st.shortTitle}
+                            </span>
+                        </div>
+                        <div class="text-xs sm:text-sm font-bold text-white">«${t.title}»</div>
+                        <p class="text-[11px] text-slate-300 leading-relaxed">${t.revealReason}</p>
+                    </div>
+                `;
+            });
+            document.getElementById('declassified-choices-list').innerHTML = top4Tasks.join('');
+
+            // 8. Render Retake New Scenario Switcher & Next Unplayed Button
+            renderRetakeScenarioSection();
+
+            // 9. Render Completed Scenarios History Comparison
+            renderHistoryComparison();
+        }
+
+        function renderRetakeScenarioSection() {
+            const allKeys = ['scenario_1', 'scenario_2', 'scenario_3'];
+            const nextUnplayed = allKeys.find(k => !completedScenariosHistory[k]);
+
+            const nextBtnLabel = document.getElementById('btn-next-unplayed-label');
+            if (nextUnplayed) {
+                nextBtnLabel.textContent = `شروع آزمون مجدد با «${SCENARIOS_BANK[nextUnplayed].shortTitle}»`;
+            } else {
+                const otherKey = allKeys.find(k => k !== activeScenarioId) || 'scenario_1';
+                nextBtnLabel.textContent = `تکرار مجدد با «${SCENARIOS_BANK[otherKey].shortTitle}» (هر ۳ سناریو تکمیل شده!)`;
+            }
+
+            const switcher = document.getElementById('report-scenarios-switcher');
+            switcher.innerHTML = allKeys.map(key => {
+                const sc = SCENARIOS_BANK[key];
+                const isDone = Boolean(completedScenariosHistory[key]);
+                const isCurrent = key === activeScenarioId;
+
+                return `
+                    <div class="rounded-2xl p-4 bg-slate-900/90 border ${isCurrent ? 'border-indigo-400' : 'border-white/10'} flex flex-col justify-between gap-3">
+                        <div class="space-y-1.5">
+                            <div class="flex items-center justify-between gap-2">
+                                <span class="text-xs font-black text-white flex items-center gap-1.5">
+                                    <i class="fa-solid ${sc.icon} text-indigo-400"></i>
+                                    ${sc.shortTitle}
+                                </span>
+                                ${
+                                    isDone
+                                        ? `<span class="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">تکمیل شده ✓</span>`
+                                        : `<span class="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30">جدید (انجام نشده)</span>`
+                                }
+                            </div>
+                            <p class="text-[11px] text-slate-400 leading-relaxed">${sc.subtitle}</p>
+                        </div>
+
+                        <button
+                            type="button"
+                            onclick="switchScenarioAndStart('${key}')"
+                            class="w-full py-2.5 px-3 rounded-xl text-xs font-extrabold flex items-center justify-center gap-1.5 transition ${
+                                isDone
+                                    ? 'bg-slate-800 hover:bg-slate-700 text-slate-200 border border-white/10'
+                                    : 'bg-indigo-600 hover:bg-indigo-500 text-white shadow-md shadow-indigo-600/25'
+                            }"
+                        >
+                            <i class="fa-solid ${isDone ? 'fa-rotate-right' : 'fa-play'}"></i>
+                            <span>${isDone ? 'آزمون مجدد این سناریو' : 'شروع این سناریوی جدید'}</span>
+                        </button>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function startNextScenarioDirectly() {
+            const allKeys = ['scenario_1', 'scenario_2', 'scenario_3'];
+            const nextKey = allKeys.find(k => !completedScenariosHistory[k])
+                || allKeys.find(k => k !== activeScenarioId)
+                || 'scenario_1';
+            switchScenarioAndStart(nextKey);
+        }
+
+        function switchScenarioAndStart(scenarioKey) {
+            activeScenarioId = scenarioKey;
+            initializeActiveScenarioState();
+            goToStep(2);
+            showToast(`وارد «${SCENARIOS_BANK[scenarioKey].shortTitle}» شدی! اکنون ۱۰ فعالیت جدید را اولویت‌بندی کن.`, 'fa-layer-group text-emerald-400');
+        }
+
+        function renderHistoryComparison() {
+            document.getElementById('history-student-name').textContent = studentProfile.firstName;
+            const entries = Object.values(completedScenariosHistory);
+            document.getElementById('history-count-tag').textContent =
+                `${toPersianDigits(entries.length)} از ۳ سناریو توسط این هنرجو انجام شده است`;
+
+            const container = document.getElementById('scenario-history-list');
+            container.innerHTML = ['scenario_1', 'scenario_2', 'scenario_3'].map(key => {
+                const sc = SCENARIOS_BANK[key];
+                const rec = completedScenariosHistory[key];
+
+                if (!rec) {
+                    return `
+                        <div class="rounded-2xl p-4 bg-slate-950/50 border border-dashed border-slate-700 flex flex-col justify-between gap-3 opacity-75">
+                            <div class="space-y-1">
+                                <div class="text-xs font-bold text-slate-400">${sc.shortTitle}</div>
+                                <div class="text-[11px] text-slate-500">هنوز این سناریو را امتحان نکرده‌ای.</div>
+                            </div>
+                            <button type="button" onclick="switchScenarioAndStart('${key}')"
+                                class="text-xs font-bold text-indigo-400 hover:text-indigo-300 flex items-center gap-1">
+                                <span>شروع این سناریو</span>
+                                <i class="fa-solid fa-arrow-left text-[10px]"></i>
+                            </button>
+                        </div>
+                    `;
+                }
+
+                return `
+                    <div class="rounded-2xl p-4 bg-slate-800/80 border border-emerald-500/30 space-y-2.5">
+                        <div class="flex items-center justify-between gap-2">
+                            <span class="text-xs font-black text-white">${rec.scenarioShortTitle}</span>
+                            <span class="text-[10px] font-extrabold px-2 py-0.5 rounded-md border ${rec.firstStreamBadge}">
+                                ۱۰۰٪ ${rec.firstStreamTitle}
+                            </span>
+                        </div>
+                        <div class="text-[11px] text-slate-300 space-y-1">
+                            <div><strong class="text-emerald-300">شغل اول (۱۰۰٪):</strong> ${rec.firstJob}</div>
+                            <div><strong class="text-indigo-300">مسیر دوم (۸۰٪):</strong> ${rec.secondStreamTitle} (${rec.secondJob})</div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function copyFinalSummaryText() {
+            const s1 = document.getElementById('exact-sentence-100').innerText.trim();
+            const s2 = document.getElementById('exact-sentence-80').innerText.trim();
+            const fullText = `${s1}\n${s2}`;
+
+            const tempArea = document.createElement('textarea');
+            tempArea.value = fullText;
+            document.body.appendChild(tempArea);
+            tempArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempArea);
+
+            showToast('متن نتیجه نهایی با موفقیت در حافظه کپی شد!', 'fa-check text-emerald-400');
+        }
+
+        // Initialize on load
+        window.addEventListener('DOMContentLoaded', () => {
+            renderLoginAvatars();
+            renderLoginScenarioCards();
+            initializeActiveScenarioState();
+        });
+    </script>
+</body>
+</html>
